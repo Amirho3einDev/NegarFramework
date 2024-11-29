@@ -111,7 +111,7 @@ class Grid extends Component<GridProps, GridState> {
 
     const formModel = {
       fields: [
-        { name: "name", label: "Name", visible: true, isRequired: true },
+        { name: "name", label: "Name", visible: true, isRequired: true,insertable:true,updateable:true,readonly:false },
         { name: "email", label: "Email", visible: true, type: "email" },
         {
           name: "details",

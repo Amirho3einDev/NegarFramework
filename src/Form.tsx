@@ -58,7 +58,7 @@ class Form extends Component<FormProps, FormState> {
 
   // مدیریت تغییر مقدار فیلد
   handleFieldChange = (field: string, value: any) => {
-    this.setState((prevState) => ({
+     this.setState((prevState) => ({
       formData: {
         ...prevState.formData,
         [field]: value,
@@ -91,7 +91,7 @@ class Form extends Component<FormProps, FormState> {
   };
 
   // ارسال فرم
-  handleSubmit = () => {
+  handleSubmit = () => { 
     this.props.onSubmit(this.state.formData);
   };
 
