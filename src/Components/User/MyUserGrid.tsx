@@ -45,8 +45,8 @@ class MyUserGridComponent extends Grid {
                     isDetail: true,
                     detailModel: {
                         fields: [
-                            { name: "productName", label: "Product Name", visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
-                            { name: "quantity", label: "Quantity", type: "number", visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
+                            { name: "productName", label: "Product Name", size: 'col-6', visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
+                            { name: "quantity", label: "Quantity",size:'col-6', type: "number", visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
                         ],
                     },
                 },

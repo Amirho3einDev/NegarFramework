@@ -24,3 +24,16 @@ body {
   border: 1px solid #ced4da !important;
   cursor: not-allowed;
 }
+
+.text-danger {
+  color: #dc3545; /* قرمز */
+}
+
+.p-invalid {
+  border-color: #dc3545 !important;
+}
+
+.p-error {
+  font-size: 0.875rem;
+  color: #dc3545;
+}
