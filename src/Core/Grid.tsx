@@ -7,33 +7,12 @@ import { Dropdown } from "primereact/dropdown";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import "./Grid.css";
+import GridProps from "./DTOs/GridProps";
+import ColumnModel from "./DTOs/ColumnModel";
+import GridState from "./DTOs/GridState";
+ 
 
-// تعریف اینترفیس ستون‌ها
-interface ColumnModel {
-  field: string;
-  header: string;
-  size?: string;
-  isHide?: boolean;
-  isFilterable?: boolean;
-}
 
-// تعریف اینترفیس Props گرید
-interface GridProps {
-  columns: ColumnModel[];
-  apiUrl: string;
-  title: string;
-  FormComponent?: JSX.Element; // فرم به‌صورت JSX
-}
-
-// تعریف اینترفیس State گرید
-interface GridState {
-  data: any[];
-  filters: { [key: string]: { operator: string; value: string } };
-  totalRecords: number;
-  currentPage: number;
-  pageSize: number;
-  showDialog: boolean; // نمایش یا مخفی بودن دیالوگ
-}
 
 class Grid extends Component<GridProps, GridState> {
   constructor(props: GridProps) {
@@ -50,6 +29,18 @@ class Grid extends Component<GridProps, GridState> {
 
   componentDidMount() {
     this.fetchData();
+  }
+
+    getTitle():string{
+      return "";
+    }
+
+    getApiUrl():string{
+      return "";
+    }
+
+   getColumns():ColumnModel[] {
+    return [];
   }
 
   // متد برای دریافت داده‌ها از API

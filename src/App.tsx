@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Form from "./Form";
+import Form from "./Core/Form";
 /*
 const App = () => {
   // مدل فرم
@@ -41,9 +41,9 @@ const App = () => {
   );
 };
 */
-
-import Grid from "./Grid"; // مسیر فایل Grid 
-import UserGridComponent from "./UserGrid";
+ 
+import UserGridComponent from "./Components/User/UserGrid";
+import MyUserGridComponent from "./Components/User/MyUserGrid";
 
 const App = () => {
 
@@ -70,7 +70,7 @@ const App = () => {
   return (
     <div className="App">
       <h1>React Grid Example</h1>
-      <UserGridComponent />
+      <MyUserGridComponent />
     </div>
   );
 };

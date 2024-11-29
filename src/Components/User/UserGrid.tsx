@@ -1,6 +1,6 @@
 import React from "react";
-import Form from "./Form";
-import Grid from "./Grid";
+import Form from "../../Core/Form"; 
+import Grid from "../../Core/Grid";
 
 class UserGridComponent extends React.Component {
   constructor(props: any) {
