@@ -1,0 +1,2 @@
+C:\Users\Amirhossein\source\repos\Framework\Framework\obj\Debug\framework.esproj.SuggestedBindingRedirects.cache
+C:\Users\Amirhossein\source\repos\Framework\Framework\obj\Debug\framework.esproj.CoreCompileInputs.cache
