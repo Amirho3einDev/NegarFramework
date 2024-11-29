@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./Grid.css"; // فایل CSS برای استایل‌دهی
+import Form from "./Form";
+import { Dialog } from "primereact/dialog";
+import { getMaxListeners } from "process";
 
 // تعریف اینترفیس برای مدل ستون‌ها
 interface ColumnModel {
@@ -26,6 +29,8 @@ interface GridState {
   currentPage: number; // صفحه فعلی
   pageSize: number; // تعداد آیتم‌های هر صفحه
   totalRecords: number; // تعداد کل رکوردها
+  isFormOpen: boolean,
+  editingRecord: any
 }
 
 class Grid extends Component<GridProps, GridState> {
@@ -37,6 +42,8 @@ class Grid extends Component<GridProps, GridState> {
       currentPage: 1,
       pageSize: 10,
       totalRecords: 0,
+      isFormOpen: false,
+      editingRecord: {}
     };
   }
 
@@ -44,25 +51,26 @@ class Grid extends Component<GridProps, GridState> {
     this.fetchData();
   }
 
+  
+
   // متد برای دریافت اطلاعات از API
   async fetchData() {
     const { apiUrl } = this.props;
-    const { filters, currentPage, pageSize } = this.state;
+    const { filters, currentPage, pageSize} = this.state;
 
     try {
       axios.post(apiUrl, {
         filters,
         page: currentPage,
         pageSize,
-      }).then(response =>{
+      }).then(response => {
 
-        console.log(response.data);
-        this.setState({
+         this.setState({
           data: response.data.records,
           totalRecords: response.data.total,
         });
       });
-     
+
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -82,7 +90,43 @@ class Grid extends Component<GridProps, GridState> {
 
   render() {
     const { columns, title, onAdd } = this.props;
-    const { data, currentPage, pageSize, totalRecords } = this.state;
+    const { data, currentPage, pageSize, totalRecords,isFormOpen,editingRecord  } = this.state;
+
+    // const ProductModel = {
+    //   name: 'Product',
+    //   fields: [
+    //     { name: 'id', label: 'ID', type: 'number', insertable: false, updateable: false, visible: true, readonly: true },
+    //     { name: 'name', label: 'Name', type: 'text', insertable: true, updateable: true, visible: true, isRequired: true },
+    //     { name: 'price', label: 'Price', type: 'number', insertable: true, updateable: true, visible: true },
+    //   ],
+    //   details: {
+    //     label: 'Variants',
+    //     fields: [
+    //       { name: 'id', label: 'ID', type: 'number', insertable: false, updateable: false, visible: true },
+    //       { name: 'color', label: 'Color', type: 'text', insertable: true, updateable: true, visible: true },
+    //       { name: 'size', label: 'Size', type: 'text', insertable: true, updateable: true, visible: true },
+    //     ],
+    //   },
+    // };
+
+    const formModel = {
+      fields: [
+        { name: "name", label: "Name", visible: true, isRequired: true },
+        { name: "email", label: "Email", visible: true, type: "email" },
+        {
+          name: "details",
+          label: "Order Details",
+          visible: true,
+          isDetail: true,
+          detailModel: {
+            fields: [
+              { name: "productName", label: "Product Name", visible: true },
+              { name: "quantity", label: "Quantity", type: "number", visible: true },
+            ],
+          },
+        },
+      ],
+    };
 
     return (
       <div className="grid-container">
@@ -90,7 +134,7 @@ class Grid extends Component<GridProps, GridState> {
           <h2>{title}</h2>
           <button
             className="btn btn-primary"
-            onClick={() => (onAdd ? onAdd() : console.log("Add clicked"))}
+            onClick={() => ( this.setState({ isFormOpen: true }))}
           >
             Add
           </button>
@@ -151,9 +195,8 @@ class Grid extends Component<GridProps, GridState> {
             (_, index) => (
               <button
                 key={index + 1}
-                className={`page-button ${
-                  currentPage === index + 1 ? "active" : ""
-                }`}
+                className={`page-button ${currentPage === index + 1 ? "active" : ""
+                  }`}
                 onClick={() => this.changePage(index + 1)}
               >
                 {index + 1}
@@ -161,7 +204,40 @@ class Grid extends Component<GridProps, GridState> {
             )
           )}
         </div>
+
+           {/* فرم ایجاد/ویرایش */ }
+    {
+      isFormOpen && (
+
+
+        <Dialog
+        header="Add Detail"
+        visible={isFormOpen}
+        onHide={() => this.setState({ isFormOpen: false })}
+      >
+        <Form
+          model={formModel}
+          data={{id:1,name:'Amirho3ein',email:'MyEmail@getMaxListeners.Com'}}
+          // onSubmit={(data: any) => this.handleAdd(data)}
+          onSubmit={(data: any) => {}}
+        />
+      </Dialog>
+        
+      )
+
+      // <div className="form-dialog">
+      //     <Form
+      //       data={editingRecord}
+      //       onClose={() => this.closeForm()}
+      //       onSave={() => {
+      //         this.fetchData();
+      //         this.closeForm();
+      //       }}
+      //     />
+      //   </div>
+    }
       </div>
+ 
     );
   }
 }

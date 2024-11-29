@@ -41,10 +41,22 @@ class Form extends Component<FormProps, FormState> {
 
   // دسترسی به مقدار هر فیلد
   get form() {
-    return this.state.formData;
+    const proxy = new Proxy(this.state.formData, {
+      get: (target, prop) => target[prop as string],
+      set: (target, prop, value) => {
+        this.setState((prevState) => ({
+          formData: {
+            ...prevState.formData,
+            [prop as string]: value,
+          },
+        }));
+        return true;
+      },
+    });
+    return proxy;
   }
 
-  // تغییر مقدار یک فیلد
+  // مدیریت تغییر مقدار فیلد
   handleFieldChange = (field: string, value: any) => {
     this.setState((prevState) => ({
       formData: {
@@ -54,7 +66,7 @@ class Form extends Component<FormProps, FormState> {
     }));
   };
 
-  // مدیریت جزئیات (افزودن داده به آرایه جزئیات)
+  // مدیریت جزئیات (افزودن به آرایه جزئیات)
   handleDetailAdd = (fieldName: string, newDetail: any) => {
     this.setState((prevState) => ({
       formData: {
@@ -98,7 +110,7 @@ class Form extends Component<FormProps, FormState> {
               (!field.insertable && !formData.id) ||
               (!field.updateable && formData.id);
 
-            // رندر DetailGrid برای فیلدهایی که isDetail=true است
+            // رندر DetailGrid برای فیلدهای جزئیات
             if (field.isDetail && field.detailModel) {
               return (
                 <div key={field.name} className={`form-group ${field.size || "col-12"}`}>
