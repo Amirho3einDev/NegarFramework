@@ -70,20 +70,21 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
   renderActions = (_: any, { rowIndex }: any) => {
     return (
       <>
-        <Button 
-          icon="pi pi-pencil"
-          className="p-button-text p-button-warning"
-          type="button"
-          onClick={() => this.handleEdit(rowIndex)}
-        />
-
-        <Button
-          icon="pi pi-trash"
-          type="button" // جلوگیری از رفتار submit
-          className="p-button-rounded p-button-outlined p-button-danger" 
-          onClick={() => this.handleDelete(rowIndex)}
-          tooltip="Delete"
-        />
+        <div className="flex justify-content-center gap-2">
+          <Button
+            icon="pi pi-pencil"
+            className="p-button-rounded p-button-text p-button-warning"
+            onClick={() => this.handleEdit(rowIndex)}
+            tooltip="Edit"
+          />
+          <Button
+            icon="pi pi-trash"
+            className="p-button-rounded p-button-text p-button-danger"
+            onClick={() => this.handleDelete(rowIndex)}
+            tooltip="Delete"
+          />
+        </div>
+         
       </>
 
 
@@ -92,7 +93,7 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
 
   render() {
     const { model, data } = this.props;
-    const { showDialog, newDetail,selectedDetail } = this.state; 
+    const { showDialog, newDetail, selectedDetail } = this.state;
     return (
       <div className="p-card p-shadow-3 p-p-3">
         <h3 className="p-text-secondary" style={{ marginBottom: "20px" }}>
@@ -107,7 +108,7 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
             className="p-button-primary"
             type="button" // جلوگیری از رفتار submit
             style={{ width: "150px" }}
-            onClick={() => this.setState({ showDialog: true, selectedDetail: null  })}
+            onClick={() => this.setState({ showDialog: true, selectedDetail: null })}
           />
         </div>
 
@@ -151,20 +152,20 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
 
           visible={showDialog}
           style={{ width: "50vw" }}
-          modal 
+          modal
           onHide={() =>
             this.setState({ showDialog: false, selectedDetail: null })
           }
-          footer={
-            <div className="p-d-flex p-jc-start">
-              <Button
-                label="Close"
-                icon="pi pi-times"
-                className="p-button-text"
-                onClick={() => this.setState({ showDialog: false })}
-              />
-            </div>
-          }
+          // footer={
+          //   <div className="p-d-flex p-jc-start">
+          //     <Button
+          //       label="Close"
+          //       icon="pi pi-times"
+          //       className="p-button-text"
+          //       onClick={() => this.setState({ showDialog: false })}
+          //     />
+          //   </div>
+          // }
         >
           <Form
             model={model}

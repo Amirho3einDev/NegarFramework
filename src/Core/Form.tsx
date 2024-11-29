@@ -141,7 +141,7 @@ class Form extends Component<FormProps, FormState> {
     const { formData, errors } = this.state;
 
     return (
-      <Card title="Form" className="p-4">
+      // <Card title="Form" className="p-4">
         <form>
           <div className="p-fluid grid">
             {model.fields.map((field: Field) => {
@@ -158,7 +158,7 @@ class Form extends Component<FormProps, FormState> {
                 return (
                   <div key={field.name} className={field.size || "col-12"}>
                     <label>
-                      {field.label}
+                      {/* {field.label} */}
                       {field.isRequired && <span className="text-danger">*</span>}
                     </label>
                     <DetailGrid
@@ -214,7 +214,7 @@ class Form extends Component<FormProps, FormState> {
             />
           </div>
         </form>
-      </Card>
+      // </Card>
     );
   }
 }
