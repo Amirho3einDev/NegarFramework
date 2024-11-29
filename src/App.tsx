@@ -70,7 +70,7 @@ const App = () => {
   return (
     <div className="App">
       <h1>React Grid Example</h1>
-      <UserGridComponent  />
+      <UserGridComponent />
     </div>
   );
 };

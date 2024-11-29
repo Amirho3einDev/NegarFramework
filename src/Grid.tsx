@@ -4,6 +4,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
+import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import "./Grid.css";
 
@@ -21,7 +22,7 @@ interface GridProps {
   columns: ColumnModel[];
   apiUrl: string;
   title: string;
-  onAdd?: () => void;
+  FormComponent?: JSX.Element; // فرم به‌صورت JSX
 }
 
 // تعریف اینترفیس State گرید
@@ -31,6 +32,7 @@ interface GridState {
   totalRecords: number;
   currentPage: number;
   pageSize: number;
+  showDialog: boolean; // نمایش یا مخفی بودن دیالوگ
 }
 
 class Grid extends Component<GridProps, GridState> {
@@ -42,6 +44,7 @@ class Grid extends Component<GridProps, GridState> {
       totalRecords: 0,
       currentPage: 1,
       pageSize: 10,
+      showDialog: false,
     };
   }
 
@@ -78,19 +81,17 @@ class Grid extends Component<GridProps, GridState> {
 
   // رندر کردن هدر گرید
   renderHeader() {
-    const { title, onAdd } = this.props;
+    const { title } = this.props;
 
     return (
       <div className="grid-header">
         <h2>{title}</h2>
-        {onAdd && (
-          <Button
-            label="Add"
-            icon="pi pi-plus"
-            className="p-button-success"
-            onClick={onAdd}
-          />
-        )}
+        <Button
+          label="Add"
+          icon="pi pi-plus"
+          className="p-button-success"
+          onClick={() => this.setState({ showDialog: true })}
+        />
       </div>
     );
   }
@@ -129,8 +130,8 @@ class Grid extends Component<GridProps, GridState> {
   }
 
   render() {
-    const { columns } = this.props;
-    const { data, totalRecords, currentPage, pageSize } = this.state;
+    const { columns, FormComponent } = this.props;
+    const { data, totalRecords, currentPage, pageSize, showDialog } = this.state;
 
     return (
       <div className="grid-container">
@@ -162,6 +163,24 @@ class Grid extends Component<GridProps, GridState> {
             )
           )}
         </DataTable>
+
+        {/* دیالوگ فرم */}
+        <Dialog
+          visible={showDialog}
+          onHide={() => this.setState({ showDialog: false })}
+          header="Add New Record"
+          modal
+          style={{ width: "50vw" }}
+        >
+          {FormComponent && React.cloneElement(FormComponent, {
+            onClose: () => this.setState({ showDialog: false }),
+            onSave: (newData: any) => {
+              console.log("Saved Data:", newData);
+              this.setState({ showDialog: false });
+              this.fetchData();
+            },
+          })}
+        </Dialog>
       </div>
     );
   }

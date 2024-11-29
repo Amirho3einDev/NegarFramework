@@ -1,4 +1,5 @@
 import React from "react";
+import Form from "./Form";
 import Grid from "./Grid";
 
 class UserGridComponent extends React.Component {
@@ -20,13 +21,38 @@ class UserGridComponent extends React.Component {
       { field: "age", header: "Age", size: "col-2", isFilterable: true },
     ];
 
+    const formModel = {
+      fields: [
+        { name: "name", label: "Name", visible: true, isRequired: true,insertable:true,updateable:true,readonly:false },
+        { name: "email", label: "Email", visible: true, type: "email" },
+        {
+          name: "details",
+          label: "Order Details",
+          visible: true,
+          isDetail: true,
+          detailModel: {
+            fields: [
+              { name: "productName", label: "Product Name", visible: true },
+              { name: "quantity", label: "Quantity", type: "number", visible: true },
+            ],
+          },
+        },
+      ],
+    };
     return (
       <div>
             <Grid
           title="User List"
           apiUrl="https://localhost:7293/api/users"
           columns={columns} 
-          onAdd={this.handleAdd}  // متد برای افزودن رکورد جدید
+          FormComponent={<Form  model={formModel}
+          data={{id:1,name:'Amirho3ein',email:'MyEmail@getMaxListeners.Com',details:[
+            {productName:'Product1',quantity:1},
+            {productName:'Product23',quantity:6},
+          ]}}
+          // onSubmit={(data: any) => this.handleAdd(data)}
+          onSubmit={(data: any) => {}}/>}
+          //onAdd={this.handleAdd}  // متد برای افزودن رکورد جدید
         />
       </div>
     );

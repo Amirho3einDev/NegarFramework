@@ -1,3 +1,7 @@
+import { Button } from "primereact/button";
+import { Card } from "primereact/card";
+import { Dropdown } from "primereact/dropdown";
+import { InputText } from "primereact/inputtext";
 import React, { Component } from "react";
 import DetailGrid from "./DetailGrid";
 
@@ -100,8 +104,9 @@ class Form extends Component<FormProps, FormState> {
     const { formData } = this.state;
 
     return (
+      <Card title="Form" className="p-4">
       <form>
-        <div className="row">
+        <div className="p-fluid grid">
           {model.fields.map((field: Field) => {
             if (!field.visible) return null;
 
@@ -110,10 +115,9 @@ class Form extends Component<FormProps, FormState> {
               (!field.insertable && !formData.id) ||
               (!field.updateable && formData.id);
 
-            // رندر DetailGrid برای فیلدهای جزئیات
             if (field.isDetail && field.detailModel) {
               return (
-                <div key={field.name} className={`form-group ${field.size || "col-12"}`}>
+                <div key={field.name} className={field.size || "col-12"}>
                   <label>{field.label}</label>
                   <DetailGrid
                     model={field.detailModel}
@@ -125,32 +129,26 @@ class Form extends Component<FormProps, FormState> {
               );
             }
 
-            // رندر فیلدهای معمولی
             return (
-              <div key={field.name} className={`form-group ${field.size || "col-12"}`}>
-                <label>{field.label}</label>
+              <div key={field.name} className={field.size || "col-12"}>
+                <label className="mb-2">{field.label}</label>
                 {field.options ? (
-                  // فیلدهای Lookup
-                  <select
-                    className="form-control"
+                  <Dropdown
                     value={formData[field.name] || ""}
-                    onChange={(e) => this.handleFieldChange(field.name, e.target.value)}
+                    options={field.options}
+                    onChange={(e) => this.handleFieldChange(field.name, e.value)}
+                    placeholder="Select"
                     disabled={isReadOnly}
-                  >
-                    <option value="">Select...</option>
-                    {field.options.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                    className="w-full"
+                  />
                 ) : (
-                  // فیلدهای معمولی
-                  <input
-                    type={field.type || "text"}
+                  <InputText
                     value={formData[field.name] || ""}
-                    onChange={(e) => this.handleFieldChange(field.name, e.target.value)}
-                    className="form-control"
+                    onChange={(e) =>
+                      this.handleFieldChange(field.name, e.target.value)
+                    }
+                    type={field.type || "text"}
+                    className="w-full"
                     readOnly={isReadOnly}
                     required={field.isRequired}
                   />
@@ -159,14 +157,16 @@ class Form extends Component<FormProps, FormState> {
             );
           })}
         </div>
-        <button
-          type="button"
-          className="btn btn-primary mt-3"
-          onClick={this.handleSubmit}
-        >
-          Save
-        </button>
+        <div className="flex justify-content-end mt-4">
+          <Button
+            label="Save"
+            icon="pi pi-check"
+            onClick={this.handleSubmit}
+            className="p-button-success"
+          />
+        </div>
       </form>
+    </Card>
     );
   }
 }
