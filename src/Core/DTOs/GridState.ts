@@ -1,3 +1,4 @@
+import ColumnModel from "./ColumnModel";
 
 // تعریف اینترفیس State گرید
 export default interface GridState {
@@ -6,5 +7,5 @@ export default interface GridState {
     totalRecords: number;
     currentPage: number;
     pageSize: number;
-    showDialog: boolean; // نمایش یا مخفی بودن دیالوگ
+    showDialog: boolean; // نمایش یا مخفی بودن دیالوگ 
   }

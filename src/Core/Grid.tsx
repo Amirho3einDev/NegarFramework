@@ -14,8 +14,8 @@ import GridState from "./DTOs/GridState";
 
 
 
-class Grid extends Component<GridProps, GridState> {
-  constructor(props: GridProps) {
+class Grid extends Component<{}, GridState> {
+  constructor(props: any) {
     super(props);
     this.state = {
       data: [],
@@ -23,7 +23,7 @@ class Grid extends Component<GridProps, GridState> {
       totalRecords: 0,
       currentPage: 1,
       pageSize: 10,
-      showDialog: false,
+      showDialog: false, 
     };
   }
 
@@ -43,9 +43,13 @@ class Grid extends Component<GridProps, GridState> {
     return [];
   }
 
+  getFormComponent():JSX.Element| null{
+    return null;
+  }
+
   // متد برای دریافت داده‌ها از API
   async fetchData() {
-    const { apiUrl } = this.props;
+    const apiUrl = this.getApiUrl();
     const { filters, currentPage, pageSize } = this.state;
 
     try {
@@ -72,7 +76,7 @@ class Grid extends Component<GridProps, GridState> {
 
   // رندر کردن هدر گرید
   renderHeader() {
-    const { title } = this.props;
+    const title = this.getTitle();
 
     return (
       <div className="grid-header">
@@ -121,7 +125,8 @@ class Grid extends Component<GridProps, GridState> {
   }
 
   render() {
-    const { columns, FormComponent } = this.props;
+    const columns = this.getColumns();
+    const FormComponent = this.getFormComponent()
     const { data, totalRecords, currentPage, pageSize, showDialog } = this.state;
 
     return (
