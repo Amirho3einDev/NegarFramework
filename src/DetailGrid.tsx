@@ -34,7 +34,7 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
     }, {});
   };
 
-  handleAdd = (data: any) => {
+  handleAdd = (data: any) => { 
     this.props.onAdd(data);
     this.setState({
       showDialog: false,
@@ -60,8 +60,7 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
 
   render() {
     const { model, data } = this.props;
-    const { showDialog, newDetail } = this.state;
-
+    const { showDialog, newDetail } = this.state; 
     return (
       <div className="p-card p-shadow-3 p-p-3">
         <h3 className="p-text-secondary" style={{ marginBottom: "20px" }}>
@@ -121,7 +120,7 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
           modal
           onHide={() => this.setState({ showDialog: false })}
           footer={
-            <div className="p-d-flex p-jc-end">
+            <div className="p-d-flex p-jc-start">
               <Button
                 label="Close"
                 icon="pi pi-times"

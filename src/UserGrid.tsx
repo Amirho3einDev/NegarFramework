@@ -32,8 +32,8 @@ class UserGridComponent extends React.Component {
           isDetail: true,
           detailModel: {
             fields: [
-              { name: "productName", label: "Product Name", visible: true },
-              { name: "quantity", label: "Quantity", type: "number", visible: true },
+              { name: "productName", label: "Product Name", visible: true, isRequired: true,insertable:true,updateable:true,readonly:false },
+              { name: "quantity", label: "Quantity", type: "number", visible: true, isRequired: true,insertable:true,updateable:true,readonly:false  },
             ],
           },
         },
