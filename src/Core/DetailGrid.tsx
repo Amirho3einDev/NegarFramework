@@ -10,11 +10,14 @@ interface DetailGridProps {
   data: any[];
   onAdd: (newDetail: any) => void;
   onDelete: (index: number) => void;
+  onEdit: (index: number, detail: any) => void;
 }
 
 interface DetailGridState {
   showDialog: boolean;
   newDetail: any;
+  selectedDetail: any | null; // برای نگهداری جزئیاتی که در حال ویرایش است
+  selectedIndex: number | null;
 }
 
 class DetailGrid extends Component<DetailGridProps, DetailGridState> {
@@ -24,6 +27,8 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
     this.state = {
       showDialog: false,
       newDetail: this.initializeNewDetail(props.model),
+      selectedDetail: null,
+      selectedIndex: null,
     };
   }
 
@@ -34,11 +39,27 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
     }, {});
   };
 
-  handleAdd = (data: any) => { 
-    this.props.onAdd(data);
+  handleAdd = (data: any) => {
+
+    if (this.state.selectedIndex !== null) {
+      // ویرایش جزئیات
+      this.props.onEdit(this.state.selectedIndex, data);
+    } else {
+      // افزودن جزئیات جدید
+      this.props.onAdd(data);
+    }
+
     this.setState({
       showDialog: false,
       newDetail: this.initializeNewDetail(this.props.model),
+    });
+  };
+
+  handleEdit = (index: number) => {
+    this.setState({
+      showDialog: true,
+      selectedDetail: this.props.data[index],
+      selectedIndex: index,
     });
   };
 
@@ -48,19 +69,30 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
 
   renderActions = (_: any, { rowIndex }: any) => {
     return (
-      <Button
-        icon="pi pi-trash"
-        type="button" // جلوگیری از رفتار submit
-        className="p-button-rounded p-button-outlined p-button-danger"
-        onClick={() => this.handleDelete(rowIndex)}
-        tooltip="Delete"
-      />
+      <>
+        <Button 
+          icon="pi pi-pencil"
+          className="p-button-text p-button-warning"
+          type="button"
+          onClick={() => this.handleEdit(rowIndex)}
+        />
+
+        <Button
+          icon="pi pi-trash"
+          type="button" // جلوگیری از رفتار submit
+          className="p-button-rounded p-button-outlined p-button-danger" 
+          onClick={() => this.handleDelete(rowIndex)}
+          tooltip="Delete"
+        />
+      </>
+
+
     );
   };
 
   render() {
     const { model, data } = this.props;
-    const { showDialog, newDetail } = this.state; 
+    const { showDialog, newDetail,selectedDetail } = this.state; 
     return (
       <div className="p-card p-shadow-3 p-p-3">
         <h3 className="p-text-secondary" style={{ marginBottom: "20px" }}>
@@ -75,7 +107,7 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
             className="p-button-primary"
             type="button" // جلوگیری از رفتار submit
             style={{ width: "150px" }}
-            onClick={() => this.setState({ showDialog: true })}
+            onClick={() => this.setState({ showDialog: true, selectedDetail: null  })}
           />
         </div>
 
@@ -84,8 +116,8 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
           value={data}
           className="p-datatable-sm p-datatable-gridlines p-datatable-striped"
           responsiveLayout="scroll"
-          // paginator
-          // rows={5}
+        // paginator
+        // rows={5}
         >
           {model.fields.map(
             (field: any) =>
@@ -108,17 +140,21 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
 
         {/* دیالوگ افزودن جزئیات */}
         <Dialog
-          header={
-            <div className="p-d-flex p-ai-center p-jc-between">
-              <span style={{ fontSize: "18px", fontWeight: "bold" }}>
-                Add New Detail
-              </span>
-            </div>
-          }
+          // header={
+          //   <div className="p-d-flex p-ai-center p-jc-between">
+          //     <span style={{ fontSize: "18px", fontWeight: "bold" }}>
+          //       Add New Detail
+          //     </span>
+          //   </div>
+          // }
+          header={selectedDetail ? "Edit Detail" : "Add Detail"}
+
           visible={showDialog}
           style={{ width: "50vw" }}
-          modal
-          onHide={() => this.setState({ showDialog: false })}
+          modal 
+          onHide={() =>
+            this.setState({ showDialog: false, selectedDetail: null })
+          }
           footer={
             <div className="p-d-flex p-jc-start">
               <Button
@@ -132,7 +168,7 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
         >
           <Form
             model={model}
-            data={newDetail}
+            data={selectedDetail || newDetail} // ارسال جزئیات انتخاب‌شده یا جزئیات خالی
             onSubmit={(data: any) => this.handleAdd(data)}
           />
         </Dialog>

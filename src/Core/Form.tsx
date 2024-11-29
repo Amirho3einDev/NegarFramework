@@ -100,6 +100,17 @@ class Form extends Component<FormProps, FormState> {
     });
   };
 
+  // مدیریت ویرایش جزئیات
+  handleDetailEdit = (fieldName: string, index: number) => {
+    const detailData = this.state.formData[fieldName][index];
+    this.setState((prevState) => ({
+      formData: {
+        ...prevState.formData,
+        [fieldName]: [...(prevState.formData[fieldName] || []), detailData],
+      },
+    }));
+  };
+
   validateForm = () => {
     const { model } = this.props;
     const { formData } = this.state;
@@ -114,7 +125,7 @@ class Form extends Component<FormProps, FormState> {
     return errors;
   };
   // ارسال فرم
-  handleSubmit = (event:any) => {
+  handleSubmit = (event: any) => {
     //this.props.onSubmit(this.state.formData);
     event.preventDefault();
     const errors = this.validateForm();
@@ -147,14 +158,15 @@ class Form extends Component<FormProps, FormState> {
                 return (
                   <div key={field.name} className={field.size || "col-12"}>
                     <label>
-                    {field.label}
-                    {field.isRequired && <span className="text-danger">*</span>}
+                      {field.label}
+                      {field.isRequired && <span className="text-danger">*</span>}
                     </label>
                     <DetailGrid
                       model={field.detailModel}
                       data={formData[field.name] || []}
                       onAdd={(newDetail) => this.handleDetailAdd(field.name, newDetail)}
                       onDelete={(index) => this.handleDetailDelete(field.name, index)}
+                      onEdit={(index) => this.handleDetailEdit(field.name, index)}
                     />
                   </div>
                 );
@@ -165,7 +177,7 @@ class Form extends Component<FormProps, FormState> {
                   <label className="mb-2">
                     {field.label}
                     {field.isRequired && <span className="text-danger">*</span>}
-                    </label>
+                  </label>
                   {field.options ? (
                     <Dropdown
                       value={formData[field.name] || ""}
@@ -197,6 +209,7 @@ class Form extends Component<FormProps, FormState> {
               label="Save"
               icon="pi pi-check"
               onClick={this.handleSubmit}
+              type="button"
               className="p-button-success"
             />
           </div>
