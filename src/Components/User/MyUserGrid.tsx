@@ -36,7 +36,7 @@ class MyUserGridComponent extends Grid {
     getFormComponent(): JSX.Element | null {
         const formModel = {
             fields: [
-                { name: "name", label: "Name", visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
+                { name: "name", label: "Name", visible: true, isRequired: true, insertable: true, updateable: true, readonly: true },
                 { name: "email", label: "Email", visible: true, type: "email" },
                 {
                     name: "details",

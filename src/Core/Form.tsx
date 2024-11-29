@@ -148,7 +148,7 @@ class Form extends Component<FormProps, FormState> {
                       this.handleFieldChange(field.name, e.target.value)
                     }
                     type={field.type || "text"}
-                    className="w-full"
+                    className={`w-full ${isReadOnly ? "readonly-input" : ""}`}
                     readOnly={isReadOnly}
                     required={field.isRequired}
                   />

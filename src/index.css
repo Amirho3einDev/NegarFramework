@@ -1,13 +1,26 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  direction: rtl;
+  text-align: right;
+}
+.p-datatable th,
+.p-datatable td {
+  text-align: right !important; /* راست‌چین کردن محتوا */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.p-d-flex {
+  flex-direction: row-reverse; /* معکوس کردن جهت عناصر */
+}
+
+.p-button {
+  margin-left: 0.5rem; /* برای تنظیم فاصله دکمه‌ها */
+  margin-right: 0; /* حذف فاصله اضافی */
+}
+
+
+/* استایل مخصوص فیلدهای ReadOnly */
+.readonly-input {
+  background-color: #e9ecef !important;
+  color: #6c757d !important;
+  border: 1px solid #ced4da !important;
+  cursor: not-allowed;
 }

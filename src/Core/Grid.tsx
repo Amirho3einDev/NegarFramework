@@ -80,13 +80,13 @@ class Grid extends Component<{}, GridState> {
 
     return (
       <div className="grid-header">
-        <h2>{title}</h2>
-        <Button
+         <Button
           label="Add"
           icon="pi pi-plus"
           className="p-button-success"
           onClick={() => this.setState({ showDialog: true })}
         />
+        <h2>{title}</h2> 
       </div>
     );
   }
