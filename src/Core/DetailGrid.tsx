@@ -95,8 +95,8 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
     const { model, data } = this.props;
     const { showDialog, newDetail, selectedDetail } = this.state;
     return (
-      <div className="p-card p-shadow-3 p-p-3">
-        <h3 className="p-text-secondary" style={{ marginBottom: "20px" }}>
+      <div className="p-card p-shadow-3 p-p-3 pr-2">
+        <h3 className="p-text-secondary" style={{ marginBottom: "20px",paddingTop:"10px " }}>
           Detail Grid
         </h3>
 
@@ -115,7 +115,7 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
         {/* جدول داده‌ها */}
         <DataTable
           value={data}
-          className="p-datatable-sm p-datatable-gridlines p-datatable-striped"
+          className="p-datatable-sm p-datatable-gridlines p-datatable-striped pt-4"
           responsiveLayout="scroll"
         // paginator
         // rows={5}
