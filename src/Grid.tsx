@@ -1,36 +1,36 @@
 import React, { Component } from "react";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
-import "./Grid.css"; // فایل CSS برای استایل‌دهی
-import Form from "./Form";
-import { Dialog } from "primereact/dialog";
-import { getMaxListeners } from "process";
+import "./Grid.css";
 
-// تعریف اینترفیس برای مدل ستون‌ها
+// تعریف اینترفیس ستون‌ها
 interface ColumnModel {
   field: string;
   header: string;
-  size?: string; // کلاس‌های CSS مانند col-6
+  size?: string;
   isHide?: boolean;
   isFilterable?: boolean;
 }
 
-// تعریف اینترفیس برای props کامپوننت Grid
+// تعریف اینترفیس Props گرید
 interface GridProps {
   columns: ColumnModel[];
-  apiUrl: string; // URL API برای دریافت اطلاعات
-  title: string; // عنوان گرید
-  onAdd?: () => void; // قابلیت Override برای دکمه Add
+  apiUrl: string;
+  title: string;
+  onAdd?: () => void;
 }
 
-// تعریف اینترفیس برای state کامپوننت Grid
+// تعریف اینترفیس State گرید
 interface GridState {
-  data: any[]; // داده‌های دریافت شده از API
-  filters: { [key: string]: { value: any; operator: string } }; // فیلترهای اعمال شده
-  currentPage: number; // صفحه فعلی
-  pageSize: number; // تعداد آیتم‌های هر صفحه
-  totalRecords: number; // تعداد کل رکوردها
-  isFormOpen: boolean,
-  editingRecord: any
+  data: any[];
+  filters: { [key: string]: { operator: string; value: string } };
+  totalRecords: number;
+  currentPage: number;
+  pageSize: number;
 }
 
 class Grid extends Component<GridProps, GridState> {
@@ -39,11 +39,9 @@ class Grid extends Component<GridProps, GridState> {
     this.state = {
       data: [],
       filters: {},
+      totalRecords: 0,
       currentPage: 1,
       pageSize: 10,
-      totalRecords: 0,
-      isFormOpen: false,
-      editingRecord: {}
     };
   }
 
@@ -51,196 +49,120 @@ class Grid extends Component<GridProps, GridState> {
     this.fetchData();
   }
 
-  
-
-  // متد برای دریافت اطلاعات از API
+  // متد برای دریافت داده‌ها از API
   async fetchData() {
     const { apiUrl } = this.props;
-    const { filters, currentPage, pageSize} = this.state;
+    const { filters, currentPage, pageSize } = this.state;
 
     try {
-      axios.post(apiUrl, {
+      const response = await axios.post(apiUrl, {
         filters,
         page: currentPage,
         pageSize,
-      }).then(response => {
-
-         this.setState({
-          data: response.data.records,
-          totalRecords: response.data.total,
-        });
       });
 
+      this.setState({
+        data: response.data.records,
+        totalRecords: response.data.total,
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }
 
-  // متد برای اعمال فیلتر
-  applyFilter(field: string, value: any, operator: string) {
-    const newFilters = { ...this.state.filters };
-    newFilters[field] = { value, operator };
-    this.setState({ filters: newFilters }, () => this.fetchData());
+  // متد برای مدیریت تغییرات فیلترها
+  onFilterChange(field: string, filterValue: { operator: string; value: string }) {
+    const updatedFilters = { ...this.state.filters, [field]: filterValue };
+    this.setState({ filters: updatedFilters }, () => this.fetchData());
   }
 
-  // متد برای تغییر صفحه
-  changePage(newPage: number) {
-    this.setState({ currentPage: newPage }, () => this.fetchData());
+  // رندر کردن هدر گرید
+  renderHeader() {
+    const { title, onAdd } = this.props;
+
+    return (
+      <div className="grid-header">
+        <h2>{title}</h2>
+        {onAdd && (
+          <Button
+            label="Add"
+            icon="pi pi-plus"
+            className="p-button-success"
+            onClick={onAdd}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // رندر کردن فیلترها برای ستون‌ها
+  renderFilters(col: ColumnModel) {
+    if (!col.isFilterable) return null;
+
+    const currentFilter = this.state.filters[col.field] || { operator: "", value: "" };
+
+    return (
+      <div className="filter-container">
+        <Dropdown
+          value={currentFilter.operator}
+          options={[
+            { label: "LIKE", value: "LIKE" },
+            { label: "=", value: "=" },
+            { label: ">", value: ">" },
+            { label: "<", value: "<" },
+          ]}
+          onChange={(e) =>
+            this.onFilterChange(col.field, { operator: e.value, value: currentFilter.value })
+          }
+          placeholder="Operator"
+          className="p-column-filter"
+        />
+        <InputText
+          value={currentFilter.value}
+          onChange={(e) =>
+            this.onFilterChange(col.field, { operator: currentFilter.operator, value: e.target.value })
+          }
+          placeholder={`Search ${col.header}`}
+        />
+      </div>
+    );
   }
 
   render() {
-    const { columns, title, onAdd } = this.props;
-    const { data, currentPage, pageSize, totalRecords,isFormOpen,editingRecord  } = this.state;
-
-    // const ProductModel = {
-    //   name: 'Product',
-    //   fields: [
-    //     { name: 'id', label: 'ID', type: 'number', insertable: false, updateable: false, visible: true, readonly: true },
-    //     { name: 'name', label: 'Name', type: 'text', insertable: true, updateable: true, visible: true, isRequired: true },
-    //     { name: 'price', label: 'Price', type: 'number', insertable: true, updateable: true, visible: true },
-    //   ],
-    //   details: {
-    //     label: 'Variants',
-    //     fields: [
-    //       { name: 'id', label: 'ID', type: 'number', insertable: false, updateable: false, visible: true },
-    //       { name: 'color', label: 'Color', type: 'text', insertable: true, updateable: true, visible: true },
-    //       { name: 'size', label: 'Size', type: 'text', insertable: true, updateable: true, visible: true },
-    //     ],
-    //   },
-    // };
-
-    const formModel = {
-      fields: [
-        { name: "name", label: "Name", visible: true, isRequired: true,insertable:true,updateable:true,readonly:false },
-        { name: "email", label: "Email", visible: true, type: "email" },
-        {
-          name: "details",
-          label: "Order Details",
-          visible: true,
-          isDetail: true,
-          detailModel: {
-            fields: [
-              { name: "productName", label: "Product Name", visible: true },
-              { name: "quantity", label: "Quantity", type: "number", visible: true },
-            ],
-          },
-        },
-      ],
-    };
+    const { columns } = this.props;
+    const { data, totalRecords, currentPage, pageSize } = this.state;
 
     return (
       <div className="grid-container">
-        <div className="grid-header">
-          <h2>{title}</h2>
-          <button
-            className="btn btn-primary"
-            onClick={() => ( this.setState({ isFormOpen: true }))}
-          >
-            Add
-          </button>
-        </div>
+        {this.renderHeader()}
 
-        <table className="grid-table">
-          <thead>
-            <tr>
-              {columns.map((col) =>
-                col.isHide ? null : (
-                  <th key={col.field} style={{ width: col.size }}>
-                    {col.header}
-                    {col.isFilterable && (
-                      <div className="filter-container">
-                        <select
-                          onChange={(e) =>
-                            this.applyFilter(col.field, "", e.target.value)
-                          }
-                        >
-                          <option value="">Select Operator</option>
-                          <option value="LIKE">LIKE</option>
-                          <option value="=">=</option>
-                          <option value="<">&lt;</option>
-                          <option value=">">&gt;</option>
-                        </select>
-                        <input
-                          type="text"
-                          placeholder={`Filter ${col.header}`}
-                          onChange={(e) =>
-                            this.applyFilter(
-                              col.field,
-                              e.target.value,
-                              this.state.filters[col.field]?.operator || "="
-                            )
-                          }
-                        />
-                      </div>
-                    )}
-                  </th>
-                )
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                {columns.map((col) =>
-                  col.isHide ? null : <td key={col.field}>{row[col.field]}</td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <div className="pagination">
-          {Array.from(
-            { length: Math.ceil(totalRecords / pageSize) },
-            (_, index) => (
-              <button
-                key={index + 1}
-                className={`page-button ${currentPage === index + 1 ? "active" : ""
-                  }`}
-                onClick={() => this.changePage(index + 1)}
-              >
-                {index + 1}
-              </button>
+        <DataTable
+          value={data}
+          paginator
+          rows={pageSize}
+          totalRecords={totalRecords}
+          lazy
+          onPage={(e: any) =>
+            this.setState(
+              { currentPage: e.page + 1, pageSize: e.rows },
+              () => this.fetchData()
+            )
+          }
+        >
+          {columns.map((col) =>
+            col.isHide ? null : (
+              <Column
+                key={col.field}
+                field={col.field}
+                header={col.header}
+                style={{ width: col.size }}
+                filter
+                filterElement={this.renderFilters(col)}
+              />
             )
           )}
-        </div>
-
-           {/* فرم ایجاد/ویرایش */ }
-    {
-      isFormOpen && (
-
-
-        <Dialog
-        header="Add Detail"
-        visible={isFormOpen}
-        onHide={() => this.setState({ isFormOpen: false })}
-      >
-        <Form
-          model={formModel}
-          data={{id:1,name:'Amirho3ein',email:'MyEmail@getMaxListeners.Com',details:[
-            {productName:'Product1',quantity:1},
-            {productName:'Product23',quantity:6},
-          ]}}
-          // onSubmit={(data: any) => this.handleAdd(data)}
-          onSubmit={(data: any) => {}}
-        />
-      </Dialog>
-        
-      )
-
-      // <div className="form-dialog">
-      //     <Form
-      //       data={editingRecord}
-      //       onClose={() => this.closeForm()}
-      //       onSave={() => {
-      //         this.fetchData();
-      //         this.closeForm();
-      //       }}
-      //     />
-      //   </div>
-    }
+        </DataTable>
       </div>
- 
     );
   }
 }
