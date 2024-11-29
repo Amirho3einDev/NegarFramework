@@ -217,7 +217,10 @@ class Grid extends Component<GridProps, GridState> {
       >
         <Form
           model={formModel}
-          data={{id:1,name:'Amirho3ein',email:'MyEmail@getMaxListeners.Com'}}
+          data={{id:1,name:'Amirho3ein',email:'MyEmail@getMaxListeners.Com',details:[
+            {productName:'Product1',quantity:1},
+            {productName:'Product23',quantity:6},
+          ]}}
           // onSubmit={(data: any) => this.handleAdd(data)}
           onSubmit={(data: any) => {}}
         />
