@@ -2,7 +2,7 @@ import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import DetailGrid from "./DetailGrid";
 
 interface Field {
@@ -33,22 +33,84 @@ interface FormProps {
 interface FormState {
   formData: any;
   errors: { [key: string]: string }
+  fieldRefs: { [key: string]: React.RefObject<any> };
+  readonlyStatus: { [key: string]: boolean }; // وضعیت readonly برای هر فیلد
+
 }
 
 class Form extends Component<FormProps, FormState> {
   constructor(props: FormProps) {
     super(props);
 
+
+    // ایجاد Refها برای فیلدها
+    const fieldRefs = props.model.fields.reduce((refs: any, field: Field) => {
+      refs[field.name] = createRef();
+      return refs;
+    }, {});
+
+     // مقدار اولیه readonlyStatus
+     const readonlyStatus = props.model.fields.reduce((status: any, field: Field) => {
+      status[field.name] = field.readonly || false;
+      return status;
+    }, {});
+
+
     this.state = {
       formData: { ...props.data },
       errors: {},
-    };
+      fieldRefs,
+      readonlyStatus
+    }; 
   }
 
-  // دسترسی به مقدار هر فیلد
+   // دسترسی به مقدار و Ref هر فیلد از طریق Proxy
+  //  get form() {
+  //   const proxy = new Proxy(this.state.formData, {
+  //     get: (target, prop) => {
+  //       const ref = this.state.fieldRefs[prop as string];
+  //       return {
+  //         value: target[prop as string],
+  //         element: ref ? ref.current : null, // دسترسی به المان DOM
+  //       };
+  //     },
+  //     set: (target, prop, value) => {
+  //       this.setState((prevState) => ({
+  //         formData: {
+  //           ...prevState.formData,
+  //           [prop as string]: value,
+  //         },
+  //       }));
+  //       return true;
+  //     },
+  //   });
+  //   return proxy;
+  // }
+
   get form() {
     const proxy = new Proxy(this.state.formData, {
-      get: (target, prop) => target[prop as string],
+      get: (target, prop) => {
+        const ref = this.state.fieldRefs[prop as string];
+        return {
+          value: target[prop as string],
+          element: ref ? ref.current : null, // دسترسی به المان DOM
+          get readonly() {
+            return this.state.readonlyStatus[prop as string];
+          },
+          set readonly(value: boolean) {
+            const ref = this.state.fieldRefs[prop as string];
+            if (ref && ref.current) {
+              ref.current.readOnly = value; // تغییر وضعیت readonly روی DOM
+              this.setState((prevState:any) => ({
+                readonlyStatus: {
+                  ...prevState.readonlyStatus,
+                  [prop as string]: value,
+                },
+              }));
+            }
+          },
+        };
+      },
       set: (target, prop, value) => {
         this.setState((prevState) => ({
           formData: {
@@ -61,7 +123,6 @@ class Form extends Component<FormProps, FormState> {
     });
     return proxy;
   }
-
   // مدیریت تغییر مقدار فیلد 
   handleFieldChange = (field: string, value: any) => {
     this.setState((prevState) => ({
