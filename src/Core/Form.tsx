@@ -50,7 +50,7 @@ class Form extends Component<FormProps, FormState> {
     }, {});
 
      // مقدار اولیه readonlyStatus
-     const readonlyStatus = props.model.fields.reduce((status: any, field: Field) => {
+    const readonlyStatus = props.model.fields.reduce((status: any, field: Field) => {
       status[field.name] = field.readonly || false;
       return status;
     }, {});
@@ -61,7 +61,7 @@ class Form extends Component<FormProps, FormState> {
       errors: {},
       fieldRefs,
       readonlyStatus
-    }; 
+    };
   }
 
    // دسترسی به مقدار و Ref هر فیلد از طریق Proxy
@@ -88,43 +88,40 @@ class Form extends Component<FormProps, FormState> {
   // }
 
   get form() {
-    const proxy = new Proxy(this.state.formData, {
-      get: (target, prop) => {
-        const ref = this.state.fieldRefs[prop as string];
-        return {
-          value: target[prop as string],
-          element: ref ? ref.current : null, // دسترسی به المان DOM
-          get readonly() {
-            return this.state.readonlyStatus[prop as string];
-          },
-          set readonly(value: boolean) {
-            const ref = this.state.fieldRefs[prop as string];
-            if (ref && ref.current) {
-              ref.current.readOnly = value; // تغییر وضعیت readonly روی DOM
-              this.setState((prevState:any) => ({
-                readonlyStatus: {
-                  ...prevState.readonlyStatus,
-                  [prop as string]: value,
-                },
-              }));
-            }
-          },
-        };
-      },
-      set: (target, prop, value) => {
-        this.setState((prevState) => ({
-          formData: {
-            ...prevState.formData,
-            [prop as string]: value,
-          },
-        }));
-        return true;
-      },
-    });
+    const { formData, readonlyStatus, fieldRefs } = this.state;
+    const self = this; // ارجاع به this
+    const proxy = new Proxy(
+      this.state.formData,
+      {
+        get: (target, prop) => {
+          if (prop in formData) {
+            return {
+              get value():any {
+                return formData[prop as string];
+              },
+              set value(newValue) {
+                self.handleFieldChange(prop as string, newValue);
+              },
+              get readonly() {
+                return readonlyStatus[prop as string];
+              },
+              set readonly(newValue: boolean) {
+                self.setReadonlyStatus(prop as string, newValue);
+              },
+              get element() {
+                return fieldRefs[prop as string]?.current || null;
+              },
+            };
+          }
+          return undefined;
+        },
+      }
+    );
+
     return proxy;
   }
   // مدیریت تغییر مقدار فیلد 
-  handleFieldChange = (field: string, value: any) => {
+  handleFieldChange = (field: string, value: any) => { 
     this.setState((prevState) => ({
       formData: {
         ...prevState.formData,
@@ -137,6 +134,15 @@ class Form extends Component<FormProps, FormState> {
     }));
   };
 
+  setReadonlyStatus = (field: string, value: boolean) => {
+    this.setState((prevState) => ({
+      readonlyStatus: {
+        ...prevState.readonlyStatus,
+        [field]: value,
+      },
+    }));
+  };
+ 
   // مدیریت جزئیات (افزودن به آرایه جزئیات)
   handleDetailAdd = (fieldName: string, newDetail: any) => {
     this.setState((prevState) => ({
@@ -183,6 +189,14 @@ class Form extends Component<FormProps, FormState> {
       }
     });
 
+    console.log(this.form.name.element);
+    console.log(this.form.name.value);
+    
+    this.form.name.readonly=true;
+    this.form.name.value="dawd";
+    console.log(this.form.name.value);
+
+
     return errors;
   };
   // ارسال فرم
@@ -199,7 +213,7 @@ class Form extends Component<FormProps, FormState> {
 
   render() {
     const { model } = this.props;
-    const { formData, errors } = this.state;
+    const { formData,errors, fieldRefs, readonlyStatus } = this.state;
 
     return (
       // <Card title="Form" className="p-4">
@@ -208,12 +222,14 @@ class Form extends Component<FormProps, FormState> {
             {model.fields.map((field: Field) => {
               if (!field.visible) return null;
 
+              const isReadOnly = readonlyStatus[field.name];
+
               const hasError = errors[field.name];
 
-              const isReadOnly =
-                field.readonly ||
-                (!field.insertable && !formData.id) ||
-                (!field.updateable && formData.id);
+              // const isReadOnly =
+              //   field.readonly ||
+              //   (!field.insertable && !formData.id) ||
+              //   (!field.updateable && formData.id);
 
               if (field.isDetail && field.detailModel) {
                 return (
@@ -241,6 +257,7 @@ class Form extends Component<FormProps, FormState> {
                   </label>
                   {field.options ? (
                     <Dropdown
+                      ref={fieldRefs[field.name]}
                       value={formData[field.name] || ""}
                       options={field.options}
                       onChange={(e) => this.handleFieldChange(field.name, e.value)}
@@ -250,6 +267,7 @@ class Form extends Component<FormProps, FormState> {
                     />
                   ) : (
                     <InputText
+                      ref={fieldRefs[field.name]}
                       value={formData[field.name] || ""}
                       onChange={(e) =>
                         this.handleFieldChange(field.name, e.target.value)
