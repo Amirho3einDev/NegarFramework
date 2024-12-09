@@ -50,3 +50,22 @@ body {
   padding: 4px 10px;
   line-height: 1; /* ترازبندی عمودی متن */
 }
+
+.custom-dialog-header {
+  background-color: #6366f1; /* رنگ آبی */
+  color: white;
+  padding: 1rem !important;
+}
+
+.custom-dialog-content {
+  padding: 20px;
+}
+
+.custom-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+ 
+.custom-dialog-header .p-dialog-header-close-icon{ 
+  color: white; 
+}

@@ -165,6 +165,8 @@ class Grid extends Component<{}, GridState> {
           visible={showDialog}
           onHide={() => this.setState({ showDialog: false })}
           header="Add New Record"
+          headerClassName="custom-dialog-header"
+          contentClassName="custom-dialog-content"
           modal
           style={{ width: "50vw" }}
         >
