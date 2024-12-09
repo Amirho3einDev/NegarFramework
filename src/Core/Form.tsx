@@ -263,9 +263,10 @@ class Form extends Component<FormProps, FormState> {
                       onChange={(e) => this.handleFieldChange(field.name, e.value)}
                       placeholder="Select"
                       disabled={isReadOnly}
-                      className={`w-full ${hasError ? 'p-invalid' : ''}`}
+                      className={`w-full custom-input ${hasError ? 'p-invalid' : ''}`}
                     />
                   ) : (
+                    
                     <InputText
                       ref={fieldRefs[field.name]}
                       value={formData[field.name] || ""}
@@ -273,7 +274,7 @@ class Form extends Component<FormProps, FormState> {
                         this.handleFieldChange(field.name, e.target.value)
                       }
                       type={field.type || "text"}
-                      className={`w-full ${isReadOnly ? "readonly-input" : ""}`}
+                      className={`w-full custom-input ${isReadOnly ? "readonly-input" : ""}`}
                       readOnly={isReadOnly}
                       required={field.isRequired}
                     />
@@ -289,7 +290,7 @@ class Form extends Component<FormProps, FormState> {
               icon="pi pi-check"
               onClick={this.handleSubmit}
               type="button"
-              className="p-button-success"
+              className="p-button-success custom-button"
             />
           </div>
         </form>

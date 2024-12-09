@@ -73,13 +73,13 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
         <div className="flex justify-content-center gap-2">
           <Button
             icon="pi pi-pencil"
-            className="p-button-rounded p-button-text p-button-warning"
+            className="p-button-rounded p-button-text p-button-warning custom-button"
             onClick={() => this.handleEdit(rowIndex)}
             tooltip="Edit"
           />
           <Button
             icon="pi pi-trash"
-            className="p-button-rounded p-button-text p-button-danger"
+            className="p-button-rounded p-button-text p-button-danger custom-button"
             onClick={() => this.handleDelete(rowIndex)}
             tooltip="Delete"
           />

@@ -37,3 +37,16 @@ body {
   font-size: 0.875rem;
   color: #dc3545;
 }
+
+.custom-input {
+  height: 35px; /* ارتفاع کمتر */
+  font-size: 14px; /* متن کوچکتر */
+  padding: 4px 8px; /* فاصله داخلی کمتر */
+}
+
+.custom-button {
+  height: 40px; /* ارتفاع کمتر */
+  font-size: 14px;
+  padding: 4px 10px;
+  line-height: 1; /* ترازبندی عمودی متن */
+}
