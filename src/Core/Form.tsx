@@ -1,4 +1,5 @@
 import { Button } from "primereact/button";
+import { Calendar } from "primereact/calendar";
 import { Card } from "primereact/card";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
@@ -249,6 +250,31 @@ class Form extends Component<FormProps, FormState> {
                 );
               }
 
+              if (field.type === "Date" || field.type === "DateTime") {
+                return (
+                  <div key={field.name} className={field.size || "col-12"}>
+                    <label>
+                      {field.label}
+                      {field.isRequired && <span className="text-danger">*</span>}
+                    </label>
+                    <Calendar
+                      value={formData[field.name] || null}
+                      onChange={(e) =>
+                        this.handleFieldChange(field.name, e.value)
+                      }
+                      showTime={field.type === "DateTime"}  
+                      showSeconds={field.type === "DateTime"}  
+                      dateFormat="yy-mm-dd"
+                      placeholder=""
+                      inputClassName="custom-input"
+                      className={`w-full ${hasError ? "p-invalid" : ""}`}
+                    />
+                    {hasError && <div className="p-error">{errors[field.name]}</div>}
+                  </div>
+                );
+              }
+  
+
               return (
                 <div key={field.name} className={field.size || "col-12"}>
                   <label className="mb-2">
@@ -266,7 +292,7 @@ class Form extends Component<FormProps, FormState> {
                       className={`w-full custom-input ${hasError ? 'p-invalid' : ''}`}
                     />
                   ) : (
-                    
+                     
                     <InputText
                       ref={fieldRefs[field.name]}
                       value={formData[field.name] || ""}
