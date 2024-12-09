@@ -40,6 +40,8 @@ class MyUserGridComponent extends Grid {
                 { name: "family", label: "family",size:'col-6', visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
                 { name: "email", label: "Email",size:'col-6', visible: true, type: "text" , isRequired: true, insertable: true, updateable: true, readonly: true },
                 { name: "Address", label: "Email",size:'col-6', visible: true, type: "text" , isRequired: true, insertable: true, updateable: true, readonly: true },
+                { name: "CreateDate", label: "CreateDate",size:'col-6', visible: true, type: "Date" , isRequired: true, insertable: true, updateable: true, readonly: true },
+                { name: "RequestDate", label: "RequestDate",size:'col-6', visible: true, type: "DateTime" , isRequired: true, insertable: true, updateable: true, readonly: true },
                 {
                     name: "details",
                     label: "Order Details",
