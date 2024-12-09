@@ -83,7 +83,7 @@ class Grid extends Component<{}, GridState> {
          <Button
           label="Add"
           icon="pi pi-plus"
-          className="p-button-success"
+          className="p-button-success custom-button"
           onClick={() => this.setState({ showDialog: true })}
         />
         <h2>{title}</h2> 
