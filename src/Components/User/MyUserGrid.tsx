@@ -34,35 +34,14 @@ class MyUserGridComponent extends Grid {
 
 
     getFormComponent(): JSX.Element | null {
-        const formModel = {
-            fields: [
-                { name: "name", label: "Name",size:'col-6', visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
-                { name: "family", label: "family",size:'col-6', visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
-                { name: "email", label: "Email",size:'col-6', visible: true, type: "text" , isRequired: true, insertable: true, updateable: true, readonly: true },
-                { name: "Address", label: "Email",size:'col-6', visible: true, type: "text" , isRequired: true, insertable: true, updateable: true, readonly: true },
-                { name: "CreateDate", label: "CreateDate",size:'col-6', visible: true, type: "Date" , isRequired: true, insertable: true, updateable: true, readonly: true },
-                { name: "RequestDate", label: "RequestDate",size:'col-6', visible: true, type: "DateTime" , isRequired: true, insertable: true, updateable: true, readonly: true },
-                {
-                    name: "details",
-                    label: "Order Details",
-                    visible: true,
-                    isDetail: true,
-                    detailModel: {
-                        fields: [
-                            { name: "productName", label: "Product Name", size: 'col-6', visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
-                            { name: "quantity", label: "Quantity",size:'col-6', type: "number", visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
-                        ],
-                    },
-                },
-            ],
-        };
-        return <Form model={formModel}
-            data={{
-                id: 1, name: 'Amirho3ein', email: 'MyEmail@getMaxListeners.Com', details: [
-                    { productName: 'Product1', quantity: 1 },
-                    { productName: 'Product23', quantity: 6 },
-                ]
-            }}
+    
+        return <Form 
+            // data={{
+            //     id: 1, name: 'Amirho3ein', email: 'MyEmail@getMaxListeners.Com', details: [
+            //         { productName: 'Product1', quantity: 1 },
+            //         { productName: 'Product23', quantity: 6 },
+            //     ]
+            // }}
             // onSubmit={(data: any) => this.handleAdd(data)}
             onSubmit={(data: any) => { }} />;
     }

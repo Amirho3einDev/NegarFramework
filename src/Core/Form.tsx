@@ -26,8 +26,8 @@ interface FormModel {
 }
 
 interface FormProps {
-  model: FormModel;
-  data: any;
+  //model: FormModel;
+  //data: any;
   onSubmit: (data: any) => void;
 }
 
@@ -43,29 +43,66 @@ class Form extends Component<FormProps, FormState> {
   constructor(props: FormProps) {
     super(props);
 
-
+    const model = this.getModel();
     // ایجاد Refها برای فیلدها
-    const fieldRefs = props.model.fields.reduce((refs: any, field: Field) => {
+    const fieldRefs = model.fields.reduce((refs: any, field: Field) => {
       refs[field.name] = createRef();
       return refs;
     }, {});
 
-     // مقدار اولیه readonlyStatus
-    const readonlyStatus = props.model.fields.reduce((status: any, field: Field) => {
+    // مقدار اولیه readonlyStatus
+    const readonlyStatus = model.fields.reduce((status: any, field: Field) => {
       status[field.name] = field.readonly || false;
       return status;
     }, {});
 
 
     this.state = {
-      formData: { ...props.data },
+      formData: this.getData(),
       errors: {},
       fieldRefs,
       readonlyStatus
     };
   }
 
-   // دسترسی به مقدار و Ref هر فیلد از طریق Proxy
+  getModel() {
+    const formModel = {
+      fields: [
+        { name: "name", label: "Name", size: 'col-6', visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
+        { name: "family", label: "family", size: 'col-6', visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
+        { name: "email", label: "Email", size: 'col-6', visible: true, type: "text", isRequired: true, insertable: true, updateable: true, readonly: true },
+        { name: "Address", label: "Email", size: 'col-6', visible: true, type: "text", isRequired: true, insertable: true, updateable: true, readonly: true },
+        { name: "CreateDate", label: "CreateDate", size: 'col-6', visible: true, type: "Date", isRequired: true, insertable: true, updateable: true, readonly: true },
+        { name: "RequestDate", label: "RequestDate", size: 'col-6', visible: true, type: "DateTime", isRequired: true, insertable: true, updateable: true, readonly: true },
+        {
+          name: "details",
+          label: "Order Details",
+          visible: true,
+          isDetail: true,
+          detailModel: {
+            fields: [
+              { name: "productName", label: "Product Name", size: 'col-6', visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
+              { name: "quantity", label: "Quantity", size: 'col-6', type: "number", visible: true, isRequired: true, insertable: true, updateable: true, readonly: false },
+            ],
+          },
+        },
+      ],
+    };
+
+    return formModel;
+  }
+
+  getData() {
+    return {
+      id: 1, name: 'Amirho3ein', email: 'MyEmail@getMaxListeners.Com', details: [
+        { productName: 'Product1', quantity: 1 },
+        { productName: 'Product23', quantity: 6 },
+      ]
+    };
+
+  }
+
+  // دسترسی به مقدار و Ref هر فیلد از طریق Proxy
   //  get form() {
   //   const proxy = new Proxy(this.state.formData, {
   //     get: (target, prop) => {
@@ -97,7 +134,7 @@ class Form extends Component<FormProps, FormState> {
         get: (target, prop) => {
           if (prop in formData) {
             return {
-              get value():any {
+              get value(): any {
                 return formData[prop as string];
               },
               set value(newValue) {
@@ -122,7 +159,7 @@ class Form extends Component<FormProps, FormState> {
     return proxy;
   }
   // مدیریت تغییر مقدار فیلد 
-  handleFieldChange = (field: string, value: any) => { 
+  handleFieldChange = (field: string, value: any) => {
     this.setState((prevState) => ({
       formData: {
         ...prevState.formData,
@@ -143,7 +180,7 @@ class Form extends Component<FormProps, FormState> {
       },
     }));
   };
- 
+
   // مدیریت جزئیات (افزودن به آرایه جزئیات)
   handleDetailAdd = (fieldName: string, newDetail: any) => {
     this.setState((prevState) => ({
@@ -180,7 +217,8 @@ class Form extends Component<FormProps, FormState> {
   };
 
   validateForm = () => {
-    const { model } = this.props;
+    // const { model } = this.props;
+    const model = this.getModel();
     const { formData } = this.state;
     const errors: { [key: string]: string } = {};
 
@@ -192,9 +230,9 @@ class Form extends Component<FormProps, FormState> {
 
     console.log(this.form.name.element);
     console.log(this.form.name.value);
-    
-    this.form.name.readonly=true;
-    this.form.name.value="dawd";
+
+    this.form.name.readonly = true;
+    this.form.name.value = "dawd";
     console.log(this.form.name.value);
 
 
@@ -213,113 +251,114 @@ class Form extends Component<FormProps, FormState> {
   };
 
   render() {
-    const { model } = this.props;
-    const { formData,errors, fieldRefs, readonlyStatus } = this.state;
+    // const { model } = this.props;
+    const model = this.getModel();
+    const { formData, errors, fieldRefs, readonlyStatus } = this.state;
 
     return (
       // <Card title="Form" className="p-4">
-        <form>
-          <div className="p-fluid grid">
-            {model.fields.map((field: Field) => {
-              if (!field.visible) return null;
+      <form>
+        <div className="p-fluid grid">
+          {model.fields.map((field: Field) => {
+            if (!field.visible) return null;
 
-              const isReadOnly = readonlyStatus[field.name];
+            const isReadOnly = readonlyStatus[field.name];
 
-              const hasError = errors[field.name];
+            const hasError = errors[field.name];
 
-              // const isReadOnly =
-              //   field.readonly ||
-              //   (!field.insertable && !formData.id) ||
-              //   (!field.updateable && formData.id);
+            // const isReadOnly =
+            //   field.readonly ||
+            //   (!field.insertable && !formData.id) ||
+            //   (!field.updateable && formData.id);
 
-              if (field.isDetail && field.detailModel) {
-                return (
-                  <div key={field.name} className={field.size || "col-12"}>
-                    <label>
-                      {/* {field.label} */}
-                      {field.isRequired && <span className="text-danger">*</span>}
-                    </label>
-                    <DetailGrid
-                      model={field.detailModel}
-                      data={formData[field.name] || []}
-                      onAdd={(newDetail) => this.handleDetailAdd(field.name, newDetail)}
-                      onDelete={(index) => this.handleDetailDelete(field.name, index)}
-                      onEdit={(index) => this.handleDetailEdit(field.name, index)}
-                    />
-                  </div>
-                );
-              }
-
-              if (field.type === "Date" || field.type === "DateTime") {
-                return (
-                  <div key={field.name} className={field.size || "col-12"}>
-                    <label>
-                      {field.label}
-                      {field.isRequired && <span className="text-danger">*</span>}
-                    </label>
-                    <Calendar
-                      value={formData[field.name] || null}
-                      onChange={(e) =>
-                        this.handleFieldChange(field.name, e.value)
-                      }
-                      showTime={field.type === "DateTime"}  
-                      showSeconds={field.type === "DateTime"}  
-                      dateFormat="yy-mm-dd"
-                      placeholder=""
-                      inputClassName="custom-input"
-                      className={`w-full ${hasError ? "p-invalid" : ""}`}
-                    />
-                    {hasError && <div className="p-error">{errors[field.name]}</div>}
-                  </div>
-                );
-              }
-  
-
+            if (field.isDetail && field.detailModel) {
               return (
                 <div key={field.name} className={field.size || "col-12"}>
-                  <label className="mb-2">
+                  <label>
+                    {/* {field.label} */}
+                    {field.isRequired && <span className="text-danger">*</span>}
+                  </label>
+                  <DetailGrid
+                    model={field.detailModel}
+                    data={formData[field.name] || []}
+                    onAdd={(newDetail) => this.handleDetailAdd(field.name, newDetail)}
+                    onDelete={(index) => this.handleDetailDelete(field.name, index)}
+                    onEdit={(index) => this.handleDetailEdit(field.name, index)}
+                  />
+                </div>
+              );
+            }
+
+            if (field.type === "Date" || field.type === "DateTime") {
+              return (
+                <div key={field.name} className={field.size || "col-12"}>
+                  <label>
                     {field.label}
                     {field.isRequired && <span className="text-danger">*</span>}
                   </label>
-                  {field.options ? (
-                    <Dropdown
-                      ref={fieldRefs[field.name]}
-                      value={formData[field.name] || ""}
-                      options={field.options}
-                      onChange={(e) => this.handleFieldChange(field.name, e.value)}
-                      placeholder="Select"
-                      disabled={isReadOnly}
-                      className={`w-full custom-input ${hasError ? 'p-invalid' : ''}`}
-                    />
-                  ) : (
-                     
-                    <InputText
-                      ref={fieldRefs[field.name]}
-                      value={formData[field.name] || ""}
-                      onChange={(e) =>
-                        this.handleFieldChange(field.name, e.target.value)
-                      }
-                      type={field.type || "text"}
-                      className={`w-full custom-input ${isReadOnly ? "readonly-input" : ""}`}
-                      readOnly={isReadOnly}
-                      required={field.isRequired}
-                    />
-                  )}
+                  <Calendar
+                    value={formData[field.name] || null}
+                    onChange={(e) =>
+                      this.handleFieldChange(field.name, e.value)
+                    }
+                    showTime={field.type === "DateTime"}
+                    showSeconds={field.type === "DateTime"}
+                    dateFormat="yy-mm-dd"
+                    placeholder=""
+                    inputClassName="custom-input"
+                    className={`w-full ${hasError ? "p-invalid" : ""}`}
+                  />
                   {hasError && <div className="p-error">{errors[field.name]}</div>}
                 </div>
               );
-            })}
-          </div>
-          <div className="flex justify-content-end mt-4">
-            <Button
-              label="Save"
-              icon="pi pi-check"
-              onClick={this.handleSubmit}
-              type="button"
-              className="p-button-success custom-button"
-            />
-          </div>
-        </form>
+            }
+
+
+            return (
+              <div key={field.name} className={field.size || "col-12"}>
+                <label className="mb-2">
+                  {field.label}
+                  {field.isRequired && <span className="text-danger">*</span>}
+                </label>
+                {field.options ? (
+                  <Dropdown
+                    ref={fieldRefs[field.name]}
+                    value={formData[field.name] || ""}
+                    options={field.options}
+                    onChange={(e) => this.handleFieldChange(field.name, e.value)}
+                    placeholder="Select"
+                    disabled={isReadOnly}
+                    className={`w-full custom-input ${hasError ? 'p-invalid' : ''}`}
+                  />
+                ) : (
+
+                  <InputText
+                    ref={fieldRefs[field.name]}
+                    value={formData[field.name] || ""}
+                    onChange={(e) =>
+                      this.handleFieldChange(field.name, e.target.value)
+                    }
+                    type={field.type || "text"}
+                    className={`w-full custom-input ${isReadOnly ? "readonly-input" : ""}`}
+                    readOnly={isReadOnly}
+                    required={field.isRequired}
+                  />
+                )}
+                {hasError && <div className="p-error">{errors[field.name]}</div>}
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex justify-content-end mt-4">
+          <Button
+            label="Save"
+            icon="pi pi-check"
+            onClick={this.handleSubmit}
+            type="button"
+            className="p-button-success custom-button"
+          />
+        </div>
+      </form>
       // </Card>
     );
   }
