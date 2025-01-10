@@ -1,10 +1,12 @@
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { Card } from "primereact/card";
+import { Checkbox } from "primereact/checkbox";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import React, { Component, createRef } from "react";
 import DetailGrid from "./DetailGrid";
+import InputCheckbox from "./InputCheckbox";
 
 interface Field {
   name: string;
@@ -73,6 +75,7 @@ class Form extends Component<FormProps, FormState> {
         { name: "email", label: "Email", size: 'col-6', visible: true, type: "text", isRequired: true, insertable: true, updateable: true, readonly: true },
         { name: "Address", label: "Email", size: 'col-6', visible: true, type: "text", isRequired: true, insertable: true, updateable: true, readonly: true },
         { name: "CreateDate", label: "CreateDate", size: 'col-6', visible: true, type: "Date", isRequired: true, insertable: true, updateable: true, readonly: true },
+        { name: "IsActive", label: "Is Active?", size: 'col-6', visible: true, type: "boolean", isRequired: true, insertable: true, updateable: true, readonly: true },
         { name: "RequestDate", label: "RequestDate", size: 'col-6', visible: true, type: "DateTime", isRequired: true, insertable: true, updateable: true, readonly: true },
         {
           name: "details",
@@ -288,7 +291,21 @@ class Form extends Component<FormProps, FormState> {
                 </div>
               );
             }
+            if (field.type === "boolean") {
 
+              return (
+                <div key={field.name} className={field.size || "col-12"}>
+                  <label>
+                    {field.label}
+                  </label>                  
+                    <InputCheckbox
+                    value={formData[field.name] || false}
+                    onChange={(value) => this.handleFieldChange(field.name, value)}
+                    disabled={false}
+                  />
+                </div>
+              )
+            }
             if (field.type === "Date" || field.type === "DateTime") {
               return (
                 <div key={field.name} className={field.size || "col-12"}>
