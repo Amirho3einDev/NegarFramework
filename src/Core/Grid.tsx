@@ -130,7 +130,7 @@ class Grid extends Component<{}, GridState> {
     const FormComponent = this.getFormComponent()
     const { data, totalRecords, currentPage, pageSize, showDialog } = this.state;
 
-    const booleanTemplate = (rowData:any, field:any) => {
+    const booleanTemplate = (rowData:any, field:any) => { 
       return (
         <Checkbox checked={rowData[field]} disabled />
       );

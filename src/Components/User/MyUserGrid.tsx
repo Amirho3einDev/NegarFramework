@@ -20,7 +20,7 @@ class MyUserGridComponent extends Grid {
             { field: "name", header: "Name", size: "col-4", isFilterable: true },
             { field: "email", header: "Email", size: "col-4", isFilterable: true },
             { field: "age", header: "Age", size: "col-1", isFilterable: true },
-            { field: "IsActive", header: "IsActive", size: "col-1", isFilterable: true,type:'boolean' },
+            { field: "isActive", header: "IsActive", size: "col-1", isFilterable: true,type:'boolean' },
         ];
         return columns;
     }
