@@ -10,6 +10,7 @@ import "./Grid.css";
 import GridProps from "./DTOs/GridProps";
 import ColumnModel from "./DTOs/ColumnModel";
 import GridState from "./DTOs/GridState";
+import { Checkbox } from "primereact/checkbox";
  
 
 
@@ -129,6 +130,12 @@ class Grid extends Component<{}, GridState> {
     const FormComponent = this.getFormComponent()
     const { data, totalRecords, currentPage, pageSize, showDialog } = this.state;
 
+    const booleanTemplate = (rowData:any, field:any) => {
+      return (
+        <Checkbox checked={rowData[field]} disabled />
+      );
+    };
+
     return (
       <div className="grid-container">
         {this.renderHeader()}
@@ -155,6 +162,7 @@ class Grid extends Component<{}, GridState> {
                 style={{ width: col.size }}
                 filter
                 filterElement={this.renderFilters(col)}
+                body={col.type === "boolean" ? (rowData) => booleanTemplate(rowData, col.field) : undefined}
               />
             )
           )}

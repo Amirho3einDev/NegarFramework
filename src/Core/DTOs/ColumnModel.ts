@@ -4,5 +4,6 @@ export default interface ColumnModel {
     size?: string;
     isHide?: boolean;
     isFilterable?: boolean;
+    type?:string;
   }
   
