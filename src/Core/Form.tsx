@@ -97,7 +97,7 @@ class Form extends Component<FormProps, FormState> {
 
   getData() {
     return {
-      id: 1, name: 'Amirho3ein', email: 'MyEmail@getMaxListeners.Com', details: [
+      id: 1, name: 'Amirho3ein', email: 'MyEmail@getMaxListeners.Com', IsActive: false, details: [
         { productName: 'Product1', quantity: 1 },
         { productName: 'Product23', quantity: 6 },
       ]
@@ -237,6 +237,7 @@ class Form extends Component<FormProps, FormState> {
     this.form.name.readonly = true;
     this.form.name.value = "dawd";
     console.log(this.form.name.value);
+    this.form.IsActive.value = true;
 
 
     return errors;
@@ -297,8 +298,8 @@ class Form extends Component<FormProps, FormState> {
                 <div key={field.name} className={field.size || "col-12"}>
                   <label>
                     {field.label}
-                  </label>                  
-                    <InputCheckbox
+                  </label>
+                  <InputCheckbox
                     value={formData[field.name] || false}
                     onChange={(value) => this.handleFieldChange(field.name, value)}
                     disabled={false}
