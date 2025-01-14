@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import { Dialog } from "primereact/dialog";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -36,6 +36,8 @@ class Lookup extends Component<LookupProps, LookupState> {
         ],
     };
 
+    autoCompleteRef: React.RefObject<AutoComplete>;
+
     getName(): string {
         return "";
     }
@@ -63,6 +65,8 @@ class Lookup extends Component<LookupProps, LookupState> {
             name: this.getName(),
             type: this.getType()
         };
+
+        this.autoCompleteRef = createRef();
     }
 
 
@@ -146,16 +150,27 @@ class Lookup extends Component<LookupProps, LookupState> {
         }
     };
 
+    handleFocus = () => {
+        if (this.state.data.length === 0) {
+            this.fetchData();
+        }
+
+        if (this.autoCompleteRef.current) {
+            this.autoCompleteRef.current.show();
+        }
+    };
+
     render() {
         return (
             <div>
                 <AutoComplete
+                ref={this.autoCompleteRef}
                     value={this.props.value}
                     suggestions={this.state.data}
                     completeMethod={(e) => { this.setState({ search: e.query, first: 0 }); this.fetchData(0); }}
-                    field="name"
-                    dropdown
+                    field="name"  
                     onChange={(e) => this.props.onChange(e.value)}
+                    onFocus={this.handleFocus}
                     placeholder="Select an option"
                     virtualScrollerOptions={{
                         lazy: true,

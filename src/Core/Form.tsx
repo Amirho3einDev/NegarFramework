@@ -7,6 +7,8 @@ import { InputText } from "primereact/inputtext";
 import React, { Component, createRef } from "react";
 import DetailGrid from "./DetailGrid";
 import InputCheckbox from "./InputCheckbox";
+import Lookup from "./Lookup";
+import LookupFactory from "./LookupFactory";
 
 interface Field {
   name: string;
@@ -77,6 +79,7 @@ class Form extends Component<FormProps, FormState> {
         { name: "CreateDate", label: "CreateDate", size: 'col-6', visible: true, type: "Date", isRequired: true, insertable: true, updateable: true, readonly: true },
         { name: "IsActive", label: "Is Active?", size: 'col-6', visible: true, type: "boolean", isRequired: true, insertable: true, updateable: true, readonly: true },
         { name: "RequestDate", label: "RequestDate", size: 'col-6', visible: true, type: "DateTime", isRequired: true, insertable: true, updateable: true, readonly: true },
+        { name: "UserLookup", label: "UserLookup", size: 'col-6', visible: true, type: "lookup", isRequired: true, insertable: true, updateable: true, readonly: true },
         {
           name: "details",
           label: "Order Details",
@@ -327,6 +330,29 @@ class Form extends Component<FormProps, FormState> {
                     className={`w-full ${hasError ? "p-invalid" : ""}`}
                   />
                   {hasError && <div className="p-error">{errors[field.name]}</div>}
+                </div>
+              );
+            }
+
+            if (field.type === "lookup") {
+              const look = LookupFactory.getLookupComponent(field.name);
+
+              if (!look) {
+                console.error(`Lookup component not found for: ${field.name}`);
+                return null;
+              }
+              return (
+                <div key={field.name} className={field.size || "col-12"}>
+                  <label>
+                    {field.label}
+                    {field.isRequired && <span className="text-danger">*</span>}
+                  </label>
+                  {React.createElement(look, {
+                    value: this.state.formData[field.name],
+                    onChange: (newValue: any) =>
+                      this.setState({ formData: { ...this.state.formData, [field.name]: newValue } }),
+
+                  })}
                 </div>
               );
             }
