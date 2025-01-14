@@ -6,12 +6,13 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import axios from "axios";
 
-interface LookupProps {
+type LookupProps = {
     value: any;
     onChange: (value: any) => void;
-    lookupName: string;
-    lookupType: "api" | "enum";
+    // lookupName: string;
+    // lookupType: "api" | "enum";
 }
+ 
 
 interface LookupState {
     visible: boolean;
@@ -21,6 +22,8 @@ interface LookupState {
     loading: boolean;
     selectedItem: any;
     first: number;
+    name: string;
+    type: string; // "api" | "enum";
 }
 
 class Lookup extends Component<LookupProps, LookupState> {
@@ -32,6 +35,20 @@ class Lookup extends Component<LookupProps, LookupState> {
         ],
     };
 
+    getName(): string {
+        return "";
+    }
+
+    getType(): string {
+        return "";
+    }
+
+    getApiUrl(): string {
+        return "";
+    }
+
+
+
     constructor(props: LookupProps) {
         super(props);
         this.state = {
@@ -42,35 +59,41 @@ class Lookup extends Component<LookupProps, LookupState> {
             loading: false,
             selectedItem: null,
             first: 0,
+            name: this.getName(),
+            type: this.getType()
         };
     }
 
+
+
     componentDidMount() {
-        if (this.props.lookupType === "enum") {
-          const enumData = this.enums[this.props.lookupName] || [];
-          this.setState({ data: enumData, totalRecords: enumData.length });
+        if (this.state.type === "enum") {
+            const enumData = this.enums[this.state.name] || [];
+            this.setState({ data: enumData, totalRecords: enumData.length });
         } else {
-          this.fetchData();
+            this.fetchData();
         }
-      }
+    }
 
     fetchData = async (first = 0) => {
-        if (this.props.lookupType === "enum") {
+        if (this.state.type === "enum") {
             return;
         }
 
         this.setState({ loading: true });
 
         try {
-            const response = await axios.get(`/api/${this.props.lookupName}`, {
+            const response = await axios.post(this.getApiUrl(), {
                 params: { skip: first, take: 10, search: this.state.search },
             });
 
             this.setState((prevState) => ({
-                data: first === 0 ? response.data.items : [...prevState.data, ...response.data.items],
+                data: first === 0 ? response.data.records : [...prevState.data, ...response.data.records],
                 totalRecords: response.data.total,
                 loading: false,
             }));
+
+            console.log(this.state.data);
         } catch (error) {
             console.error("Error fetching lookup data", error);
             this.setState({ loading: false });
@@ -78,7 +101,7 @@ class Lookup extends Component<LookupProps, LookupState> {
     };
 
     loadEnumData = () => {
-        const enumData = this.enums[this.props.lookupName] || [];
+        const enumData = this.enums[this.state.name] || [];
         this.setState({ data: enumData, totalRecords: enumData.length });
     };
 
@@ -91,29 +114,29 @@ class Lookup extends Component<LookupProps, LookupState> {
 
     onVirtualScroll = async (event: any) => {
         if (this.state.loading) return;
-      
+
         const nextFirst = event.first;
         this.setState({ first: nextFirst, loading: true });
-      
-        if (this.props.lookupType === "enum") {
-          return;
+
+        if (this.state.type === "enum") {
+            return;
         }
-      
+
         try {
-          const response = await axios.get(`/api/${this.props.lookupName}`, {
-            params: { skip: nextFirst, take: 10, search: this.state.search },
-          });
-      
-          this.setState((prevState) => ({
-            data: [...prevState.data, ...response.data.items],
-            totalRecords: response.data.total,
-            loading: false,
-          }));
+            const response = await axios.post(`${this.getApiUrl()}`, {
+                params: { skip: nextFirst, take: 10, search: this.state.search },
+            });
+
+            this.setState((prevState) => ({
+                data: [...prevState.data, ...response.data.records],
+                totalRecords: response.data.total,
+                loading: false,
+            }));
         } catch (error) {
-          console.error("Error fetching lookup data", error);
-          this.setState({ loading: false });
+            console.error("Error fetching lookup data", error);
+            this.setState({ loading: false });
         }
-      };
+    };
 
     handleSelect = () => {
         if (this.state.selectedItem) {
