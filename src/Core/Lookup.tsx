@@ -5,6 +5,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import axios from "axios";
+import { AutoComplete } from "primereact/autocomplete";
 
 type LookupProps = {
     value: any;
@@ -12,7 +13,7 @@ type LookupProps = {
     // lookupName: string;
     // lookupType: "api" | "enum";
 }
- 
+
 
 interface LookupState {
     visible: boolean;
@@ -148,38 +149,20 @@ class Lookup extends Component<LookupProps, LookupState> {
     render() {
         return (
             <div>
-                <div className="p-inputgroup">
-                    <InputText value={this.props.value?.name || ""} readOnly />
-                    <Button icon="pi pi-search" onClick={() => this.setState({ visible: true }, () => this.fetchData())} />
-                </div>
-
-                <Dialog header="Select Item" visible={this.state.visible} onHide={() => this.setState({ visible: false })}>
-                    <InputText
-                        value={this.state.search}
-                        onChange={(e) => this.setState({ search: e.target.value, first: 0 }, () => this.fetchData(0))}
-                        placeholder="Search..."
-                    />
-
-                    <DataTable
-                        value={this.state.data}
-                        scrollable
-                        scrollHeight="400px"
-                        loading={this.state.loading}
-                        selectionMode="single"
-                        selection={this.state.selectedItem}
-                        onSelectionChange={(e) => this.setState({ selectedItem: e.value })}
-                        virtualScrollerOptions={{
-                            lazy: true,
-                            itemSize: 40,
-                            onScroll: (event) => this.onVirtualScroll(event),
-                        }}
-                    >
-                        <Column field="id" header="ID" />
-                        <Column field="name" header="Name" />
-                    </DataTable>
-
-                    <Button label="Select" onClick={this.handleSelect} />
-                </Dialog>
+                <AutoComplete
+                    value={this.props.value}
+                    suggestions={this.state.data}
+                    completeMethod={(e) => { this.setState({ search: e.query, first: 0 }); this.fetchData(0); }}
+                    field="name"
+                    dropdown
+                    onChange={(e) => this.props.onChange(e.value)}
+                    placeholder="Select an option"
+                    virtualScrollerOptions={{
+                        lazy: true,
+                        itemSize: 40,
+                        onScroll: this.onLazyLoad,
+                    }}
+                />
             </div>
         );
     }
