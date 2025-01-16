@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { Card } from "primereact/card";
@@ -100,13 +101,34 @@ class Form extends Component<FormProps, FormState> {
     return formModel;
   }
 
-  getData(entityId: any) {
-    return {
-      id: 1, name: 'Amirho3ein', email: 'MyEmail@getMaxListeners.Com', IsActive: false, details: [
-        { productName: 'Product1', quantity: 1 },
-        { productName: 'Product23', quantity: 6 },
-      ]
-    };
+  protected getApiUrl(): string {
+    return "";
+  }
+
+  async fetchData() {
+    const apiUrl = this.getApiUrl();
+
+    try {
+      const response = await axios.post(apiUrl, {
+        EntityId: this.props.selectedEntity?.id
+      });
+
+      return response.data;
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  async getData(entityId: any) {
+    // return {
+    //   id: 1, name: 'Amirho3ein', email: 'MyEmail@getMaxListeners.Com', IsActive: false, details: [
+    //     { productName: 'Product1', quantity: 1 },
+    //     { productName: 'Product23', quantity: 6 },
+    //   ]
+    // };
+    var data = await this.fetchData();
+    return data;
 
   }
 
@@ -228,7 +250,9 @@ class Form extends Component<FormProps, FormState> {
     const entityId = this.props.selectedEntity?.id;
 
     if (entityId != null) {
-      this.getData(entityId);
+      this.getData(entityId).then(data => {
+        this.setState({ formData: data });
+      });
     }
   }
 
@@ -267,9 +291,13 @@ class Form extends Component<FormProps, FormState> {
     }
   };
 
+  componentDidMount() {
+    this.onOpen();
+  }
+
   render() {
 
-    this.onOpen();
+
     // const { model } = this.props;
     const model = this.getModel();
     const { formData, errors, fieldRefs, readonlyStatus } = this.state;

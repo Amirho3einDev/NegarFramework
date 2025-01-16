@@ -2,6 +2,7 @@ import React from "react";
 import ColumnModel from "../../Core/DTOs/ColumnModel";
 import Form from "../../Core/Form";
 import Grid from "../../Core/Grid";
+import UserForm from "./UserForm";
 
 class MyUserGridComponent extends Grid {
     constructor(props: any) {
@@ -36,7 +37,7 @@ class MyUserGridComponent extends Grid {
 
     getFormComponent(): JSX.Element | null {
     
-        return <Form 
+        return <UserForm 
             // data={{
             //     id: 1, name: 'Amirho3ein', email: 'MyEmail@getMaxListeners.Com', details: [
             //         { productName: 'Product1', quantity: 1 },
