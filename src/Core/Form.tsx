@@ -6,6 +6,7 @@ import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import React, { Component, createRef } from "react";
 import DetailGrid from "./DetailGrid";
+import BaseEntity from "./DTOs/BaseEntity";
 import InputCheckbox from "./InputCheckbox";
 import Lookup from "./Lookup";
 import LookupFactory from "./LookupFactory";
@@ -32,6 +33,7 @@ interface FormModel {
 interface FormProps {
   //model: FormModel;
   //data: any;
+  selectedEntity: BaseEntity | null;
   onSubmit: (data: any) => void;
 }
 
@@ -62,7 +64,7 @@ class Form extends Component<FormProps, FormState> {
 
 
     this.state = {
-      formData: this.getData(),
+      formData: this.getData(null),
       errors: {},
       fieldRefs,
       readonlyStatus
@@ -98,7 +100,7 @@ class Form extends Component<FormProps, FormState> {
     return formModel;
   }
 
-  getData() {
+  getData(entityId: any) {
     return {
       id: 1, name: 'Amirho3ein', email: 'MyEmail@getMaxListeners.Com', IsActive: false, details: [
         { productName: 'Product1', quantity: 1 },
@@ -222,8 +224,16 @@ class Form extends Component<FormProps, FormState> {
     }));
   };
 
+  onOpen = () => {
+    const entityId = this.props.selectedEntity?.id;
+
+    if (entityId != null) {
+      this.getData(entityId);
+    }
+  }
+
   validateForm = () => {
-    // const { model } = this.props;
+    // const { model } = this.props; 
     const model = this.getModel();
     const { formData } = this.state;
     const errors: { [key: string]: string } = {};
@@ -258,6 +268,8 @@ class Form extends Component<FormProps, FormState> {
   };
 
   render() {
+
+    this.onOpen();
     // const { model } = this.props;
     const model = this.getModel();
     const { formData, errors, fieldRefs, readonlyStatus } = this.state;

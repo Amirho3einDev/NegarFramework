@@ -44,6 +44,7 @@ class MyUserGridComponent extends Grid {
             //     ]
             // }}
             // onSubmit={(data: any) => this.handleAdd(data)}
+            selectedEntity={null}
             onSubmit={(data: any) => { }} />;
     }
 

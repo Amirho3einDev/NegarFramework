@@ -171,6 +171,7 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
             // model={model}
             // data={selectedDetail || newDetail} // ارسال جزئیات انتخاب‌شده یا جزئیات خالی
             onSubmit={(data: any) => this.handleAdd(data)}
+            selectedEntity={null}
           />
         </Dialog>
       </div>

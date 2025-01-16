@@ -1,3 +1,4 @@
+import BaseEntity from "./BaseEntity";
 import ColumnModel from "./ColumnModel";
 
 // تعریف اینترفیس State گرید
@@ -8,4 +9,5 @@ export default interface GridState {
     currentPage: number;
     pageSize: number;
     showDialog: boolean; // نمایش یا مخفی بودن دیالوگ 
+    selectedEntity:BaseEntity | null;
   }

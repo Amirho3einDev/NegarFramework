@@ -11,7 +11,7 @@ import GridProps from "./DTOs/GridProps";
 import ColumnModel from "./DTOs/ColumnModel";
 import GridState from "./DTOs/GridState";
 import { Checkbox } from "primereact/checkbox";
- 
+
 
 
 
@@ -24,7 +24,8 @@ class Grid extends Component<{}, GridState> {
       totalRecords: 0,
       currentPage: 1,
       pageSize: 10,
-      showDialog: false, 
+      showDialog: false,
+      selectedEntity: null
     };
   }
 
@@ -32,19 +33,19 @@ class Grid extends Component<{}, GridState> {
     this.fetchData();
   }
 
-    getTitle():string{
-      return "";
-    }
+  getTitle(): string {
+    return "";
+  }
 
-    getApiUrl():string{
-      return "";
-    }
+  getApiUrl(): string {
+    return "";
+  }
 
-   getColumns():ColumnModel[] {
+  getColumns(): ColumnModel[] {
     return [];
   }
 
-  getFormComponent():JSX.Element| null{
+  getFormComponent(): JSX.Element | null {
     return null;
   }
 
@@ -81,13 +82,13 @@ class Grid extends Component<{}, GridState> {
 
     return (
       <div className="grid-header">
-         <Button
+        <Button
           label="Add"
           icon="pi pi-plus"
           className="p-button-success custom-button"
           onClick={() => this.setState({ showDialog: true })}
         />
-        <h2>{title}</h2> 
+        <h2>{title}</h2>
       </div>
     );
   }
@@ -125,12 +126,18 @@ class Grid extends Component<{}, GridState> {
     );
   }
 
+  handleRowClick = (rowData: any) => {
+
+    this.setState({ selectedEntity: rowData, showDialog: true })
+    console.log(this.state.selectedEntity);
+  };
+
   render() {
     const columns = this.getColumns();
     const FormComponent = this.getFormComponent()
     const { data, totalRecords, currentPage, pageSize, showDialog } = this.state;
 
-    const booleanTemplate = (rowData:any, field:any) => { 
+    const booleanTemplate = (rowData: any, field: any) => {
       return (
         <Checkbox checked={rowData[field]} disabled />
       );
@@ -145,6 +152,9 @@ class Grid extends Component<{}, GridState> {
           paginator
           rows={pageSize}
           totalRecords={totalRecords}
+          selectionMode="single"
+          selection={this.state.selectedEntity}
+          onSelectionChange={(e) => this.handleRowClick(e.value)}
           lazy
           onPage={(e: any) =>
             this.setState(
@@ -180,6 +190,7 @@ class Grid extends Component<{}, GridState> {
         >
           {FormComponent && React.cloneElement(FormComponent, {
             onClose: () => this.setState({ showDialog: false }),
+            selectedEntity: this.state.selectedEntity,
             onSave: (newData: any) => {
               console.log("Saved Data:", newData);
               this.setState({ showDialog: false });
