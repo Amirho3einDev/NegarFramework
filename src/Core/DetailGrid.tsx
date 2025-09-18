@@ -3,6 +3,7 @@ import { Dialog } from "primereact/dialog";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import FormRegistry from "../Components/Registeration/FormRegistery";
 import Form from "./Form";
 
 interface DetailGridProps {
@@ -43,9 +44,11 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
 
     if (this.state.selectedIndex !== null) {
       // ویرایش جزئیات
+      console.log('edit');
       this.props.onEdit(this.state.selectedIndex, data);
     } else {
       // افزودن جزئیات جدید
+      console.log('edit');
       this.props.onAdd(data);
     }
 
@@ -61,6 +64,8 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
       selectedDetail: this.props.data[index],
       selectedIndex: index,
     });
+    console.log(this.props.data[index]); 
+    console.log(index); 
   };
 
   handleDelete = (index: number) => {
@@ -93,7 +98,10 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
 
   render() {
     const { model, data } = this.props;
-    const { showDialog, newDetail, selectedDetail } = this.state;
+    const { showDialog, newDetail, selectedDetail } = this.state; 
+    const FormComponent = FormRegistry[model.FormName];
+    if (!FormComponent) return <div>فرم "{model.FormName}" پیدا نشد</div>;
+console.log(selectedDetail);
     return (
       <div className="p-card p-shadow-3 p-p-3 pr-2">
         <h3 className="p-text-secondary" style={{ marginBottom: "20px",paddingTop:"10px " }}>
@@ -139,6 +147,8 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
         </DataTable>
 
 
+        
+
         {/* دیالوگ افزودن جزئیات */}
         <Dialog
           // header={
@@ -166,13 +176,14 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
           //     />
           //   </div>
           // }
-        >
-          <Form
-            // model={model}
-            // data={selectedDetail || newDetail} // ارسال جزئیات انتخاب‌شده یا جزئیات خالی
-            onSubmit={(data: any) => this.handleAdd(data)}
-            selectedEntity={null}
-          />
+        > 
+
+<FormComponent
+        
+        onSubmit={(data: any) => this.handleAdd(data)}
+        selectedEntity={this.state.selectedDetail}
+        loadFromApi={false}
+       />
         </Dialog>
       </div>
     );

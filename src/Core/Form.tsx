@@ -7,7 +7,7 @@ import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import React, { Component, createRef } from "react";
 import DetailGrid from "./DetailGrid";
-import BaseEntity from "./DTOs/BaseEntity";
+import { FormProps } from "./DTOs/FormProps";
 import InputCheckbox from "./InputCheckbox";
 import Lookup from "./Lookup";
 import LookupFactory from "./LookupFactory";
@@ -29,13 +29,6 @@ interface Field {
 
 interface FormModel {
   fields: Field[];
-}
-
-interface FormProps {
-  //model: FormModel;
-  //data: any;
-  selectedEntity: BaseEntity | null;
-  onSubmit: (data: any) => void;
 }
 
 interface FormState {
@@ -228,8 +221,19 @@ class Form extends Component<FormProps, FormState> {
   };
 
   onOpen = () => {
-    const entityId = this.props.selectedEntity?.id;
+    const entityId = this.props.selectedEntity?.id; 
+    const loadFromApi = this.props.loadFromApi;
+    console.log(loadFromApi);
 
+      if (entityId == null || entityId == undefined) {
+          return;
+      }
+
+    if(loadFromApi!=null && !loadFromApi)
+    {
+      this.setState({ formData: this.props.selectedEntity });
+      return;
+    }
     if (entityId != null) {
       this.getData(entityId).then(data => {
         this.setState({ formData: data });
@@ -248,16 +252,7 @@ class Form extends Component<FormProps, FormState> {
         errors[field.name] = `${field.label} is required`;
       }
     });
-
-    console.log(this.form.name.element);
-    console.log(this.form.name.value);
-
-    this.form.name.readonly = true;
-    this.form.name.value = "dawd";
-    console.log(this.form.name.value);
-    this.form.IsActive.value = true;
-
-
+   
     return errors;
   };
   // ارسال فرم
