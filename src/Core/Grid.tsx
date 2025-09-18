@@ -189,9 +189,10 @@ class Grid extends Component<{}, GridState> {
           style={{ width: "50vw" }}
         >
           {FormComponent && React.cloneElement(FormComponent, {
+            isNew: this.state.selectedEntity==null ? true : false,
             onClose: () => this.setState({ showDialog: false }),
             selectedEntity: this.state.selectedEntity,
-            onSave: (newData: any) => {
+            onSubmit: (newData: any) => {
               console.log("Saved Data:", newData);
               this.setState({ showDialog: false });
               this.fetchData();

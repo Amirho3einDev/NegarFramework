@@ -48,7 +48,7 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
       this.props.onEdit(this.state.selectedIndex, data);
     } else {
       // افزودن جزئیات جدید
-      console.log('edit');
+      console.log('add');
       this.props.onAdd(data);
     }
 
@@ -179,7 +179,7 @@ console.log(selectedDetail);
         > 
 
 <FormComponent
-        
+        isNew ={selectedDetail ? false : true}
         onSubmit={(data: any) => this.handleAdd(data)}
         selectedEntity={this.state.selectedDetail}
         loadFromApi={false}

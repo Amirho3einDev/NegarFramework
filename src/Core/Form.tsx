@@ -223,11 +223,12 @@ class Form extends Component<FormProps, FormState> {
   onOpen = () => {
     const entityId = this.props.selectedEntity?.id; 
     const loadFromApi = this.props.loadFromApi;
-    console.log(loadFromApi);
+    console.log(this.props.isNew);
 
-      if (entityId == null || entityId == undefined) {
-          return;
-      }
+    if( this.props.isNew)
+    {
+      return;
+    }
 
     if(loadFromApi!=null && !loadFromApi)
     {
