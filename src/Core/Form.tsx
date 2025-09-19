@@ -220,12 +220,15 @@ class Form extends Component<FormProps, FormState> {
     }));
   };
 
+  protected isNew(){
+    return this.props.selectedEntity ? false : true;
+  }
+
   onOpen = () => {
     const entityId = this.props.selectedEntity?.id; 
-    const loadFromApi = this.props.loadFromApi;
-    console.log(this.props.isNew);
+    const loadFromApi = this.props.loadFromApi; 
 
-    if( this.props.isNew)
+    if( this.isNew())
     {
       return;
     }

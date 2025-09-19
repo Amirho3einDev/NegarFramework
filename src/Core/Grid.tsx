@@ -188,8 +188,7 @@ class Grid extends Component<{}, GridState> {
           modal
           style={{ width: "50vw" }}
         >
-          {FormComponent && React.cloneElement(FormComponent, {
-            isNew: this.state.selectedEntity==null ? true : false,
+          {FormComponent && React.cloneElement(FormComponent, { 
             onClose: () => this.setState({ showDialog: false }),
             selectedEntity: this.state.selectedEntity,
             onSubmit: (newData: any) => {

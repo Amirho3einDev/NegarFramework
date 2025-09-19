@@ -178,8 +178,7 @@ console.log(selectedDetail);
           // }
         > 
 
-<FormComponent
-        isNew ={selectedDetail ? false : true}
+<FormComponent 
         onSubmit={(data: any) => this.handleAdd(data)}
         selectedEntity={this.state.selectedDetail}
         loadFromApi={false}
