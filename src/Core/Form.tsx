@@ -224,16 +224,20 @@ class Form extends Component<FormProps, FormState> {
     return this.props.selectedEntity ? false : true;
   }
 
+  protected isDetailForm(){
+    console.log(this.props.loadFromApi);
+    return !this.props.loadFromApi;
+  }
+
   onOpen = () => {
     const entityId = this.props.selectedEntity?.id; 
-    const loadFromApi = this.props.loadFromApi; 
-
+     
     if( this.isNew())
     {
       return;
     }
 
-    if(loadFromApi!=null && !loadFromApi)
+    if(this.isDetailForm())
     {
       this.setState({ formData: this.props.selectedEntity });
       return;
@@ -259,13 +263,26 @@ class Form extends Component<FormProps, FormState> {
    
     return errors;
   };
+
+protected save(data:any){
+
+}
+
   // ارسال فرم
   handleSubmit = (event: any) => {
     //this.props.onSubmit(this.state.formData);
     event.preventDefault();
     const errors = this.validateForm();
+    console.log(errors);
     if (Object.keys(errors).length === 0) {
-      this.props.onSubmit(this.state.formData);
+      var formData = this.state.formData;
+      if(!this.isDetailForm()){
+        console.log('save');
+        this.save(this.form);
+      }
+
+      this.props.onSubmit(this.form);
+
     } else {
       this.setState({ errors });
     }

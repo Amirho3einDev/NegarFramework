@@ -101,8 +101,7 @@ class DetailGrid extends Component<DetailGridProps, DetailGridState> {
     const { showDialog, newDetail, selectedDetail } = this.state; 
     const FormComponent = FormRegistry[model.FormName];
     if (!FormComponent) return <div>فرم "{model.FormName}" پیدا نشد</div>;
-console.log(selectedDetail);
-    return (
+     return (
       <div className="p-card p-shadow-3 p-p-3 pr-2">
         <h3 className="p-text-secondary" style={{ marginBottom: "20px",paddingTop:"10px " }}>
           Detail Grid
