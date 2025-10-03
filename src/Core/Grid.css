@@ -1,120 +1,210 @@
-/* استایل کلی برای کانتینر گرید */
 .grid-container {
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* هدر گرید */
-  .grid-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
+  margin: 40px auto;
+  padding: 10px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f8fbff, #ffffff);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+  transition: all 0.4s ease;
+}
+
+.grid-container:hover {
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
+  transform: translateY(-3px);
+}
+
+.grid-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding: 20px 25px;
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(135deg, #d0e4ff, #ffffff);
+  border-bottom: 2px solid #cfd4e0;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.grid-header h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a1f36;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.grid-header .p-button {
+  font-weight: 700;
+  border-radius: 25px;
+  padding: 0.9rem 2rem;
+  font-size: 1rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.35s ease;
+  background: linear-gradient(45deg, #4a90e2, #50e3c2);
+  color: #fff;
+}
+
+.grid-header .p-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(45deg, #357ab8, #3bbfa6);
+}
+
+.p-datatable {
+  overflow: hidden;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.p-datatable thead th {
+  background: linear-gradient(90deg, #e0f0ff, #f9fbff);
+  color: #2a2f45;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 20px 24px;
+  border-bottom: 2px solid #cfd4e0;
+}
+
+.p-datatable tbody td {
+  padding: 18px 22px;
+  color: #1c1f33;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
+}
+
+.p-datatable tbody tr:nth-child(even) {
+  background-color: #f5faff;
+}
+
+.p-datatable tbody tr:hover {
+  background-color: #d0e6ff;
+  transition: background-color 0.25s ease;
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.filter-container select,
+.filter-container input {
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  border-radius: 16px;
+  border: 1px solid #c0c8d5;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.filter-container select:focus,
+.filter-container input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 15px rgba(74, 144, 226, 0.35);
+  outline: none;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.page-button {
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  border: 1px solid #c0c8d5;
+  border-radius: 16px;
+  background-color: #f0f7ff;
+  color: #1c1f33;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.page-button:hover {
+  background-color: #4a90e2;
+  color: #fff;
+}
+
+.page-button.active {
+  background-color: #50e3c2;
+  color: #fff;
+  border-color: #3bbfa6;
+}
+
+.custom-dialog-header {
+  background: linear-gradient(135deg, #4a90e2, #50e3c2);
+  color: #fff;
+  text-align: right;
+  font-weight: 700;
+  font-size: 1.4rem;
+  padding: 1.2rem 1.5rem;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border: 2px solid #357ab8;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
+}
+
+.custom-dialog-content {
+  padding: 2rem;
+  background: #f5faff;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border: 2px solid #357ab8;
+  box-shadow: 0 14px 45px rgba(0, 0, 0, 0.2);
+}
+
+.p-dialog {
+  border-radius: 2rem;
+}
+.p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover{
+  background: #357ab8 !important;
+}
+@media (max-width: 1200px) {
+
   .grid-header h2 {
-    margin: 0;
+    font-size: 1.8rem;
+  }
+
+  .grid-header .p-button {
+    padding: 0.8rem 1.7rem;
+    font-size: 0.95rem;
+  }
+
+  .p-datatable thead th,
+  .p-datatable tbody td {
+    padding: 15px 18px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .grid-header {
+    align-items: flex-start;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .grid-header h2 {
     font-size: 1.5rem;
-    color: #333;
   }
-  
-  .grid-header .btn {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+
+  .p-datatable thead th,
+  .p-datatable tbody td {
+    padding: 12px 10px;
+    font-size: 0.85rem;
   }
-  
-  .grid-header .btn:hover {
-    background-color: #0056b3;
-  }
-  
-  /* استایل جدول */
-  .grid-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
-  
-  .grid-table th,
-  .grid-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border: 1px solid #ddd;
-  }
-  
-  .grid-table th {
-    background-color: #f8f9fa;
-    font-weight: bold;
-    color: #555;
-  }
-  
-  .grid-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .grid-table tr:hover {
-    background-color: #f1f1f1;
-  }
-  
-  /* فیلترها */
+
   .filter-container {
-    margin-top: 5px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    flex-direction: column;
+    align-items: stretch;
   }
-  
-  .filter-container select,
-  .filter-container input {
-    padding: 5px;
-    font-size: 0.9rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+
+  .p-dialog {
+    width: 100vw !important;
   }
-  
-  .filter-container select:focus,
-  .filter-container input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
-  }
-  
-  /* صفحه‌بندی */
-  .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .page-button {
-    padding: 8px 12px;
-    font-size: 0.9rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #f8f9fa;
-    color: #555;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .page-button:hover {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  .page-button.active {
-    background-color: #007bff;
-    color: #fff;
-    border-color: #0056b3;
-  }
-  
+}
