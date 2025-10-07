@@ -1,0 +1,66 @@
+.custom-dialog-header {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #ffffff;
+    text-align: right;
+    font-weight: 700;
+    font-size: 1.4rem;
+    padding: 1.4rem 1.8rem;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-dialog-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 10s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+}
+
+.custom-dialog-content {
+    padding: 2.2rem;
+    background: linear-gradient(135deg, #ffffff, #fafbff);
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border: 1px solid #f0f2ff;
+    color: #4a5568;
+}
+
+.p-dialog {
+    border-radius: 20px;
+    box-shadow: 0 25px 60px rgba(99, 102, 241, 0.15);
+    border: 1px solid #f0f2ff;
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover {
+    background: rgba(99, 102, 241, 0.1) !important;
+}
+
+.p-dialog {
+    min-width: 20vw !important;
+    width: 50vw;
+    margin: 20px;
+}
+
+@media (max-width: 600px) {
+    .p-dialog {
+        width: auto;
+
+    }
+}
+
