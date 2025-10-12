@@ -12,6 +12,10 @@ import InputCheckbox from "./InputCheckbox";
 import Lookup from "./Lookup";
 import LookupFactory from "./LookupFactory";
 import "./Form.css";
+import DatePicker from "react-multi-date-picker";
+import TimePicker from "react-multi-date-picker/plugins/time_picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
 
 
 interface Field {
@@ -222,21 +226,19 @@ class Form extends Component<FormProps, FormState> {
     }));
   };
 
-  protected isNew(){
+  protected isNew() {
     return this.props.selectedEntity ? false : true;
   }
 
   onOpen = () => {
-    const entityId = this.props.selectedEntity?.id; 
-    const loadFromApi = this.props.loadFromApi; 
+    const entityId = this.props.selectedEntity?.id;
+    const loadFromApi = this.props.loadFromApi;
 
-    if( this.isNew())
-    {
+    if (this.isNew()) {
       return;
     }
 
-    if(loadFromApi!=null && !loadFromApi)
-    {
+    if (loadFromApi != null && !loadFromApi) {
       this.setState({ formData: this.props.selectedEntity });
       return;
     }
@@ -258,7 +260,7 @@ class Form extends Component<FormProps, FormState> {
         errors[field.name] = `${field.label} is required`;
       }
     });
-   
+
     return errors;
   };
   // ارسال فرم
@@ -339,18 +341,20 @@ class Form extends Component<FormProps, FormState> {
                     {field.label}
                     {field.isRequired && <span className="text-danger">*</span>}
                   </label>
-                  <Calendar
-                    value={formData[field.name] || null}
-                    onChange={(e) =>
-                      this.handleFieldChange(field.name, e.value)
+
+                  <DatePicker
+                    value={formData[field.name] || ""}
+                    onChange={(date) =>
+                      this.handleFieldChange(field.name, date?.toDate() || null)
                     }
-                    showTime={field.type === "DateTime"}
-                    showSeconds={field.type === "DateTime"}
-                    dateFormat="yy-mm-dd"
-                    placeholder=""
-                    inputClassName="custom-input"
-                    className={`w-full ${hasError ? "p-invalid" : ""}`}
+                    calendar={persian}
+                    locale={persian_fa}
+                    format={field.type === "DateTime" ? "YYYY/MM/DD HH:mm:ss" : "YYYY/MM/DD"}
+                    plugins={field.type === "DateTime" ? [<TimePicker position="bottom" />] : []}
+                    inputClass="w-full custom-input p-inputtext p-component"
+                    portal
                   />
+
                   {hasError && <div className="p-error">{errors[field.name]}</div>}
                 </div>
               );

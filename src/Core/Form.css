@@ -64,3 +64,10 @@
     }
 }
 
+.p-dialog-mask.p-component-overlay {
+    z-index: 99 !important;
+}
+
+.rmdp-container {
+    display: flex !important;
+}
