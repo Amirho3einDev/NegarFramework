@@ -190,6 +190,7 @@ class Grid extends Component<{}, GridState> {
           {FormComponent && React.cloneElement(FormComponent, { 
             onClose: () => this.setState({ showDialog: false }),
             selectedEntity: this.state.selectedEntity,
+            loadFromApi:true,
             onSubmit: (newData: any) => {
               console.log("Saved Data:", newData);
               this.setState({ showDialog: false });
