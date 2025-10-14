@@ -9,6 +9,10 @@ import { FormProps } from "./DTOs/FormProps";
 import InputCheckbox from "./InputCheckbox";
 import LookupFactory from "./LookupFactory";
 import "./Form.css";
+import DatePicker from "react-multi-date-picker";
+import TimePicker from "react-multi-date-picker/plugins/time_picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
 
 
 interface Field {
@@ -219,7 +223,7 @@ class Form extends Component<FormProps, FormState> {
     }));
   };
 
-  protected isNew(){
+  protected isNew() {
     return this.props.selectedEntity ? false : true;
   }
 
@@ -259,7 +263,7 @@ class Form extends Component<FormProps, FormState> {
         errors[field.name] = `${field.label} is required`;
       }
     });
-   
+
     return errors;
   };
 
@@ -300,142 +304,146 @@ protected save(data:any){
 
     return (
       // <Card title="Form" className="p-4">
-      <form>
-        <div className="p-fluid grid">
-          {model.fields.map((field: Field) => {
-            if (!field.visible) return null;
+      <form className="dialog-form-container">
+        <div className="form-content-scrollable">
+          <div className="p-fluid grid">
+            {model.fields.map((field: Field) => {
+              if (!field.visible) return null;
 
-            const isReadOnly = readonlyStatus[field.name];
+              const isReadOnly = readonlyStatus[field.name];
 
-            const hasError = errors[field.name];
+              const hasError = errors[field.name];
 
-            // const isReadOnly =
-            //   field.readonly ||
-            //   (!field.insertable && !formData.id) ||
-            //   (!field.updateable && formData.id);
+              // const isReadOnly =
+              //   field.readonly ||
+              //   (!field.insertable && !formData.id) ||
+              //   (!field.updateable && formData.id);
 
-            if (field.isDetail && field.detailModel) {
+              if (field.isDetail && field.detailModel) {
+                return (
+                  <div key={field.name} className={field.size || "col-12"}>
+                    <label>
+                      {/* {field.label} */}
+                      {field.isRequired && <span className="text-danger">*</span>}
+                    </label>
+                    <DetailGrid
+                      model={field.detailModel}
+                      data={formData[field.name] || []}
+                      onAdd={(newDetail) => this.handleDetailAdd(field.name, newDetail)}
+                      onDelete={(index) => this.handleDetailDelete(field.name, index)}
+                      onEdit={(index) => this.handleDetailEdit(field.name, index)}
+                    />
+                  </div>
+                );
+              }
+              if (field.type === "boolean") {
+
+                return (
+                  <div key={field.name} className={field.size || "col-12"}>
+                    <label>
+                      {field.label}
+                    </label>
+                    <InputCheckbox
+                      value={formData[field.name] || false}
+                      onChange={(value) => this.handleFieldChange(field.name, value)}
+                      disabled={false}
+                    />
+                  </div>
+                )
+              }
+              if (field.type === "Date" || field.type === "DateTime") {
+                return (
+                  <div key={field.name} className={field.size || "col-12"}>
+                    <label>
+                      {field.label}
+                      {field.isRequired && <span className="text-danger">*</span>}
+                    </label>
+
+                    <DatePicker
+                      value={formData[field.name] || ""}
+                      onChange={(date) =>
+                        this.handleFieldChange(field.name, date?.toDate() || null)
+                      }
+                      calendar={persian}
+                      locale={persian_fa}
+                      format={field.type === "DateTime" ? "YYYY/MM/DD HH:mm:ss" : "YYYY/MM/DD"}
+                      plugins={field.type === "DateTime" ? [<TimePicker position="bottom" />] : []}
+                      inputClass="w-full custom-input p-inputtext p-component"
+                      portal
+                    />
+
+                    {hasError && <div className="p-error">{errors[field.name]}</div>}
+                  </div>
+                );
+              }
+
+              if (field.type === "lookup") {
+                const look = LookupFactory.getLookupComponent(field.name);
+
+                if (!look) {
+                  console.error(`Lookup component not found for: ${field.name}`);
+                  return null;
+                }
+                return (
+                  <div key={field.name} className={field.size || "col-12"}>
+                    <label>
+                      {field.label}
+                      {field.isRequired && <span className="text-danger">*</span>}
+                    </label>
+                    {React.createElement(look, {
+                      value: this.state.formData[field.name],
+                      onChange: (newValue: any) =>
+                        this.setState({ formData: { ...this.state.formData, [field.name]: newValue } }),
+
+                    })}
+                  </div>
+                );
+              }
+
+
               return (
                 <div key={field.name} className={field.size || "col-12"}>
-                  <label>
-                    {/* {field.label} */}
+                  <label className="mb-2">
+                    {field.label}
                     {field.isRequired && <span className="text-danger">*</span>}
                   </label>
-                  <DetailGrid
-                    model={field.detailModel}
-                    data={formData[field.name] || []}
-                    onAdd={(newDetail) => this.handleDetailAdd(field.name, newDetail)}
-                    onDelete={(index) => this.handleDetailDelete(field.name, index)}
-                    onEdit={(index) => this.handleDetailEdit(field.name, index)}
-                  />
-                </div>
-              );
-            }
-            if (field.type === "boolean") {
+                  {field.options ? (
+                    <Dropdown
+                      ref={fieldRefs[field.name]}
+                      value={formData[field.name] || ""}
+                      options={field.options}
+                      onChange={(e) => this.handleFieldChange(field.name, e.value)}
+                      placeholder="Select"
+                      disabled={isReadOnly}
+                      className={`w-full custom-input ${hasError ? 'p-invalid' : ''}`}
+                    />
+                  ) : (
 
-              return (
-                <div key={field.name} className={field.size || "col-12"}>
-                  <label>
-                    {field.label}
-                  </label>
-                  <InputCheckbox
-                    value={formData[field.name] || false}
-                    onChange={(value) => this.handleFieldChange(field.name, value)}
-                    disabled={false}
-                  />
-                </div>
-              )
-            }
-            if (field.type === "Date" || field.type === "DateTime") {
-              return (
-                <div key={field.name} className={field.size || "col-12"}>
-                  <label>
-                    {field.label}
-                    {field.isRequired && <span className="text-danger">*</span>}
-                  </label>
-                  <Calendar
-                    value={formData[field.name] || null}
-                    onChange={(e) =>
-                      this.handleFieldChange(field.name, e.value)
-                    }
-                    showTime={field.type === "DateTime"}
-                    showSeconds={field.type === "DateTime"}
-                    dateFormat="yy-mm-dd"
-                    placeholder=""
-                    inputClassName="custom-input"
-                    className={`w-full ${hasError ? "p-invalid" : ""}`}
-                  />
+                    <InputText
+                      ref={fieldRefs[field.name]}
+                      value={formData[field.name] || ""}
+                      onChange={(e) =>
+                        this.handleFieldChange(field.name, e.target.value)
+                      }
+                      type={field.type || "text"}
+                      className={`w-full custom-input ${isReadOnly ? "readonly-input" : ""}`}
+                      readOnly={isReadOnly}
+                      required={field.isRequired}
+                    />
+                  )}
                   {hasError && <div className="p-error">{errors[field.name]}</div>}
                 </div>
               );
-            }
-
-            if (field.type === "lookup") {
-              const look = LookupFactory.getLookupComponent(field.name);
-
-              if (!look) {
-                console.error(`Lookup component not found for: ${field.name}`);
-                return null;
-              }
-              return (
-                <div key={field.name} className={field.size || "col-12"}>
-                  <label>
-                    {field.label}
-                    {field.isRequired && <span className="text-danger">*</span>}
-                  </label>
-                  {React.createElement(look, {
-                    value: this.state.formData[field.name],
-                    onChange: (newValue: any) =>
-                      this.setState({ formData: { ...this.state.formData, [field.name]: newValue } }),
-
-                  })}
-                </div>
-              );
-            }
-
-
-            return (
-              <div key={field.name} className={field.size || "col-12"}>
-                <label className="mb-2">
-                  {field.label}
-                  {field.isRequired && <span className="text-danger">*</span>}
-                </label>
-                {field.options ? (
-                  <Dropdown
-                    ref={fieldRefs[field.name]}
-                    value={formData[field.name] || ""}
-                    options={field.options}
-                    onChange={(e) => this.handleFieldChange(field.name, e.value)}
-                    placeholder="Select"
-                    disabled={isReadOnly}
-                    className={`w-full custom-input ${hasError ? 'p-invalid' : ''}`}
-                  />
-                ) : (
-
-                  <InputText
-                    ref={fieldRefs[field.name]}
-                    value={formData[field.name] || ""}
-                    onChange={(e) =>
-                      this.handleFieldChange(field.name, e.target.value)
-                    }
-                    type={field.type || "text"}
-                    className={`w-full custom-input ${isReadOnly ? "readonly-input" : ""}`}
-                    readOnly={isReadOnly}
-                    required={field.isRequired}
-                  />
-                )}
-                {hasError && <div className="p-error">{errors[field.name]}</div>}
-              </div>
-            );
-          })}
+            })}
+          </div>
         </div>
-        <div className="flex justify-content-end mt-4">
+        <div className="dialog-footer-fixed">
           <Button
             label="Save"
             icon="pi pi-check"
             onClick={this.handleSubmit}
             type="button"
-            className="p-button-success custom-button"
+          className="custom-button"
           />
         </div>
       </form>
