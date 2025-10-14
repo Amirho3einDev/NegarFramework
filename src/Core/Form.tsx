@@ -1,15 +1,12 @@
 import axios from "axios";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
-import { Card } from "primereact/card";
-import { Checkbox } from "primereact/checkbox";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import React, { Component, createRef } from "react";
 import DetailGrid from "./DetailGrid";
 import { FormProps } from "./DTOs/FormProps";
 import InputCheckbox from "./InputCheckbox";
-import Lookup from "./Lookup";
 import LookupFactory from "./LookupFactory";
 
 interface Field {
