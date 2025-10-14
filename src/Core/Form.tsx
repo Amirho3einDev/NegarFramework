@@ -8,6 +8,8 @@ import DetailGrid from "./DetailGrid";
 import { FormProps } from "./DTOs/FormProps";
 import InputCheckbox from "./InputCheckbox";
 import LookupFactory from "./LookupFactory";
+import "./Form.css";
+
 
 interface Field {
   name: string;

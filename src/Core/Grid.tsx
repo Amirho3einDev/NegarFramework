@@ -186,7 +186,6 @@ class Grid extends Component<{}, GridState> {
           headerClassName="custom-dialog-header"
           contentClassName="custom-dialog-content"
           modal
-          style={{ width: "50vw" }}
         >
           {FormComponent && React.cloneElement(FormComponent, { 
             onClose: () => this.setState({ showDialog: false }),
